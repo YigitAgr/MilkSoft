@@ -21,5 +21,21 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public User getUserById(int id){
+        return userRepository.findById(id).orElseThrow( ()->new RuntimeException("User not foundwith id "+id));
+    }
 
+    public User createUser(User user) {
+
+        return userRepository.save(user);
+
+    }
+
+    public User updateUser(User user){
+        if(userRepository.existsById(user.getId())){
+            return userRepository.save(user);
+        }else{
+            throw new RuntimeException("User not found with id "+user.getId());
+        }
+    }
 }
