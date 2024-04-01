@@ -1,19 +1,28 @@
 /* Styles for screens larger than 1200px */
 @media screen and (min-width: 1200px) {
     .main-page {
+
+        overflow: hidden;
+        text-align: center;
         background-image: url('../../Imgs/inek.jpg');
         background-repeat: no-repeat;
         background-size: cover;
         width: 100vw;
         height: 100vh;
-        text-align: center;
-        color: black;
-        overflow: hidden;
+        text-shadow: black 0.1em 0.1em 0.2em;
     }
     .main-page h1 {
+    text-shadow: black 0.1em 0.1em 0.2em;
         font-size: 3em;
         margin-top: 5%;
+
+
     }
+    .main-page .deneme{
+        background-color: rgba(0, 0, 0, 0.104);
+        border-radius: 40px;
+    }
+
 }
 
 /* Styles for screens between 768px and 1199px */
