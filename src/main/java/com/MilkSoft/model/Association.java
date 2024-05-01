@@ -21,4 +21,5 @@ public class Association {
     private String Password;
     private String Email;
     private String Role;
+    private String City;
 }

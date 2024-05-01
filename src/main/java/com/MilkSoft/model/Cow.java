@@ -1,13 +1,9 @@
 package com.MilkSoft.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import jakarta.persistence.Id;
 
 import java.util.Date;
 
@@ -31,5 +27,9 @@ public class Cow {
     private Boolean isAdult;
 
     private Boolean isPregnant;
+
+    @ManyToOne
+    @JoinColumn(name = "farm_id")
+    private Farm farm;
 
 }
