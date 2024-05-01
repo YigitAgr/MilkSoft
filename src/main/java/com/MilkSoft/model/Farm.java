@@ -27,4 +27,4 @@ public class Farm {
     @OneToMany(mappedBy = "farm",cascade = CascadeType.ALL)
     private List<Cow> cows;
 
-}
+}//asdasfasfasf
