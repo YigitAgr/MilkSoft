@@ -1,0 +1,28 @@
+@media screen and (min-width: 1200px) {
+    .login-page {
+        background-color: rgb(255, 255, 255, 255);
+        height: 100vh;
+        width: 100vw;
+    }
+    .login-page .img{
+        background-image: url("../../Imgs/ineklogin.jpg");
+        background-size: cover;
+
+    }
+    .login-page .login-actions{
+        diplay: flex;
+        justify-content: space-between;
+    }
+     .login-page .login-button{
+        background-color: blue !important;
+        color: white !important;
+        border-radius: 5px !important;
+        margin-left: 52% !important;
+    }
+    .login-page .inputfield{
+        color:white;
+    }
+    body{
+        overflow: hidden;
+    }
+}
