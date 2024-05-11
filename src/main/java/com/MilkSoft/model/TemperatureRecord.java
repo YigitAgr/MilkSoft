@@ -4,32 +4,28 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import java.util.List;
+
+import java.util.Date;
 
 @Data
 @Getter
 @Setter
 @Entity
-@Table(name = "farm")
-public class Farm {
+@Table(name = "temperature_record")
+public class TemperatureRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String name;
+    private float temperature;
 
-    private int totalCows;
+    private float averageWet; // New field to store average wetness
 
-    private int dailyMilkProduction;
-
-    private String Breed;
+    private Date date;
 
     @ManyToOne
     @JoinColumn(name = "association_id")
     private Association association;
-
-    @OneToMany(mappedBy = "farm",cascade = CascadeType.ALL)
-    private List<Cow> cows;
 
 }
