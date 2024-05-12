@@ -1,7 +1,7 @@
 package com.MilkSoft.dto;
 
 import com.opencsv.bean.CsvBindByName;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 

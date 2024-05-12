@@ -2,6 +2,7 @@ package com.MilkSoft.service;
 
 import com.MilkSoft.dto.MonthlyReport;
 import com.MilkSoft.model.Farm;
+import com.MilkSoft.model.Temperature;
 import com.MilkSoft.model.TemperatureRecord;
 import com.MilkSoft.repository.FarmRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +36,12 @@ public class MonthlyReportService {
             List<TemperatureRecord> temperatureRecords = farm.getAssociation().getTemperatureRecords();
 
             // Calculate min, max, and average temperature
-            List<Float> temperatures = temperatureRecords.stream()
-                    .map(TemperatureRecord::getTemperature)
-                    .collect(Collectors.toList());
+            List<Float> temperatures = new ArrayList<>();
+            for (TemperatureRecord temperatureRecord : temperatureRecords) {
+                for (Temperature temperature : temperatureRecord.getTemperatures()) {
+                    temperatures.add(temperature.getTemperature());
+                }
+            }
             float minTemperature = temperatures.stream().min(Float::compare).orElse(Float.NaN);
             float maxTemperature = temperatures.stream().max(Float::compare).orElse(Float.NaN);
             float avgTemperature = (float) temperatures.stream().mapToDouble(val -> val).average().orElse(Double.NaN);

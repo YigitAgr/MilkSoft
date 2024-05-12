@@ -20,6 +20,7 @@ public class FarmerController {
         return farmerService.getUsers();
     }
 
+
     @GetMapping("/{id}")
     public Farmer getUserbyId(@PathVariable int id){
         return farmerService.getUserById(id);

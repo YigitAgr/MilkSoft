@@ -1,6 +1,6 @@
 package com.MilkSoft.model;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,9 +19,6 @@ public class Association {
     private int Id;
 
     private String Name;
-    private String Password;
-    private String Email;
-    private String Role;
     private String City;
 
     @OneToMany(mappedBy = "association")

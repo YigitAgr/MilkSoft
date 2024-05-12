@@ -1,11 +1,11 @@
 package com.MilkSoft.model;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
+import java.util.List;
 
 @Data
 @Getter
@@ -18,11 +18,8 @@ public class TemperatureRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private float temperature;
-
-    private float averageWet; // New field to store average wetness
-
-    private Date date;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Temperature> temperatures;
 
     @ManyToOne
     @JoinColumn(name = "association_id")
