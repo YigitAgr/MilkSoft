@@ -7,7 +7,7 @@ import com.MilkSoft.service.FarmerService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/farmer")
 public class FarmerController {
     private FarmerService farmerService;
 

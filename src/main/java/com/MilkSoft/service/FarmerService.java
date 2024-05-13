@@ -25,6 +25,7 @@ public class FarmerService {
         return farmerRepository.findById(id).orElseThrow( ()->new RuntimeException("User not foundwith id "+id));
     }
 
+
     public Farmer createUser(Farmer farmer) {
 
         return farmerRepository.save(farmer);
