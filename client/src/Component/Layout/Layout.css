@@ -1,3 +1,8 @@
-.custom-selected-item.ant-menu-item-selected {
-    background-color: #4Da167 !important;
+.custom-selected-item.selected {
+    background-color: transparent !important;
+    border: 2px solid whitesmoke !important;
+}
+
+.custom-selected-item:not(.selected) {
+    background-color: transparent !important;
 }

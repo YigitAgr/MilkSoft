@@ -63,4 +63,10 @@ public class Farmer implements UserDetails {
         return id;
     }
 
+
+
+    public Role getRole() {
+        return this.role;
+    }
+
 }
