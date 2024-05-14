@@ -7,6 +7,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class FarmerDetailsService implements UserDetailsService {
 
@@ -17,11 +19,17 @@ public class FarmerDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Farmer farmer = farmerRepository.findByEmail(email);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Farmer farmer = farmerRepository.findByUsername(username);
         if (farmer == null) {
             throw new UsernameNotFoundException("User not found");
         }
         return farmer;
     }
+
+    public List<Farmer> getAllUsers() {
+        return farmerRepository.findAll();
+    }
+
+
 }

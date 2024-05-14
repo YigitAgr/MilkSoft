@@ -14,7 +14,7 @@ public class Farmer implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String name;
+    private String username;
     private String password;
     private String email;
 
@@ -35,7 +35,7 @@ public class Farmer implements UserDetails {
 
     @Override
     public String getUsername() {
-        return name;
+        return username;
     }
 
     @Override
@@ -63,10 +63,15 @@ public class Farmer implements UserDetails {
         return id;
     }
 
-
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public Role getRole() {
-        return this.role;
+        if (role == null) {
+            return Role.FARMER;  // Replace Role.DEFAULT with the default role you want to use
+        }
+        return role;
     }
 
 }

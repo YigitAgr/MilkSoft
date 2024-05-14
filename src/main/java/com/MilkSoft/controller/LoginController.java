@@ -5,13 +5,13 @@ import com.MilkSoft.service.FarmerDetailsService;
 import com.MilkSoft.config.JwtUtil;  // make sure this import is correct
 import com.MilkSoft.service.FarmerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -44,5 +44,17 @@ public class LoginController {
             throw new IllegalArgumentException("Role cannot be null");
         }
         return farmerService.createUser(farmer);
+    }
+
+    @GetMapping("/getAllUsers")
+    public List<Farmer> getAllUsers() {
+        return farmerDetailsService.getAllUsers();
+    }
+
+
+    @DeleteMapping("/deleteAllUsers")
+    public ResponseEntity<?> deleteAllUsers() {
+        farmerService.deleteAllUsers();
+        return ResponseEntity.ok().build();
     }
 }
