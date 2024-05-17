@@ -1,60 +1,32 @@
 package com.MilkSoft.controller;
 
-import com.MilkSoft.model.Farmer;
-import com.MilkSoft.service.FarmerDetailsService;
-import com.MilkSoft.config.JwtUtil;  // make sure this import is correct
-import com.MilkSoft.service.FarmerService;
+import com.MilkSoft.model.User;
+import com.MilkSoft.service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/auth")
 public class LoginController {
+
     @Autowired
-    private FarmerService farmerService;
-
-    private final AuthenticationManager authenticationManager;
-    private final FarmerDetailsService farmerDetailsService;
-    private final JwtUtil jwtUtil;
-
-    public LoginController(AuthenticationManager authenticationManager, FarmerDetailsService farmerDetailsService, JwtUtil jwtUtil) {
-        this.authenticationManager = authenticationManager;
-        this.farmerDetailsService = farmerDetailsService;
-        this.jwtUtil = jwtUtil;
-    }
+    private MyUserDetailsService userDetailsService;
 
     @PostMapping("/login")
-    public String login(@RequestBody Farmer farmer) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(farmer.getUsername(), farmer.getPassword())
-        );
-        UserDetails userDetails = farmerDetailsService.loadUserByUsername(farmer.getUsername());
-        return jwtUtil.generateToken(userDetails);
+    public ResponseEntity<?> authenticateUser(@RequestBody User loginRequest) {
+        // Implement your authentication logic here
+        // For simplicity, let's just return the loginRequest
+        return ResponseEntity.ok(loginRequest);
     }
 
     @PostMapping("/register")
-    public Farmer register(@RequestBody Farmer farmer) {
-        if (farmer.getRole() == null) {
-            throw new IllegalArgumentException("Role cannot be null");
-        }
-        return farmerService.createUser(farmer);
-    }
-
-    @GetMapping("/getAllUsers")
-    public List<Farmer> getAllUsers() {
-        return farmerDetailsService.getAllUsers();
-    }
-
-
-    @DeleteMapping("/deleteAllUsers")
-    public ResponseEntity<?> deleteAllUsers() {
-        farmerService.deleteAllUsers();
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> registerUser(@RequestBody User registrationRequest) {
+        userDetailsService.saveUser(registrationRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
     }
 }
