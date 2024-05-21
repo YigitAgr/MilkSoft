@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './Layout.css';
 import DashBoardAdmin from "../HomePageContent/DashBoardAdmin.jsx";
 import HomePageContentUser from "../HomePageContent/DashBoardUser.jsx";
-import FarmsContent from "../Farms/FarmsContent.jsx";
+import { Link } from 'react-router-dom';
 import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
@@ -10,13 +10,15 @@ import {
     UserOutlined,
     VideoCameraOutlined,
     LogoutOutlined,
+    HomeOutlined,
+    ContactsOutlined
 } from '@ant-design/icons';
 import { Layout, Menu, Button, Avatar } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
 const { Header, Content, Sider } = Layout;
 
-const LayoutPage = () => {
+const LayoutPage = ({ children }) => { // Notice the children prop here
     const [collapsed, setCollapsed] = useState(false);
     const [token, setToken] = useState('');
     const [userRoles, setUserRoles] = useState([]);
@@ -40,20 +42,18 @@ const LayoutPage = () => {
             setCurrentPage('HomePageContentUser');
         } else if (key === 'admin1') {
             setCurrentPage('DashBoardAdmin');
-        } else if (key === 'admin2') {
-            setCurrentPage('FarmsContent');
         }
-        // Add more conditions here if you have other pages
     };
 
     const renderContent = () => {
+        if (children) {
+            return children; // Render the children if they exist
+        }
         switch (currentPage) {
             case 'HomePageContentUser':
                 return <HomePageContentUser />;
             case 'DashBoardAdmin':
                 return <DashBoardAdmin />;
-            case 'FarmsContent':
-                return <FarmsContent />;
             // Add more cases if you have other pages to render
             default:
                 if(userRoles.includes('ADMIN')) {
@@ -89,7 +89,7 @@ const LayoutPage = () => {
                                 className={`custom-selected-item ${selectedKey === '1' ? 'selected' : ''}`}
                                 style={{ color: 'white' }}
                                 key='1'
-                                icon={<UserOutlined />}
+                                icon={<HomeOutlined />}
                             >
                                 Dashboard
                             </Menu.Item>
@@ -117,23 +117,23 @@ const LayoutPage = () => {
                                 className={`custom-selected-item ${selectedKey === 'admin1' ? 'selected' : ''}`}
                                 style={{ color: 'white' }}
                                 key='admin1'
-                                icon={<UserOutlined />}
+                                icon={<HomeOutlined style={{fontSize:'24px'}} />}
                             >
-                                Dashboard
+                                <Link to="/home">Dashboard</Link>
                             </Menu.Item>
                             <Menu.Item
                                 className={`custom-selected-item ${selectedKey === 'admin2' ? 'selected' : ''}`}
                                 style={{ color: 'white' }}
                                 key='admin2'
-                                icon={<VideoCameraOutlined />}
+                                icon={<ContactsOutlined style={{fontSize:'24px'}} />}
                             >
-                                Farms
+                                <Link to="/farms">Farms</Link>
                             </Menu.Item>
                             <Menu.Item
                                 className={`custom-selected-item ${selectedKey === 'admin3' ? 'selected' : ''}`}
                                 style={{ color: 'white' }}
                                 key='admin3'
-                                icon={<UploadOutlined />}
+                                icon={<UploadOutlined  style={{fontSize:'24px'}}/>}
                             >
                                 Supplies
                             </Menu.Item>
@@ -141,7 +141,7 @@ const LayoutPage = () => {
                     )}
                     <Menu.Item
                         key="logout"
-                        icon={<LogoutOutlined />}
+                        icon={<LogoutOutlined  style={{fontSize:'24px'}}/>}
                         style={{ position: 'absolute', bottom: 0, width: '100%' }}
                         onClick={handleLogout}
                     >
@@ -171,7 +171,7 @@ const LayoutPage = () => {
                                 style={{ backgroundColor: '#DBC4A4' }} />
                     </div>
                 </Header>
-                {renderContent()}
+                {renderContent()} // Render the content here
             </Layout>
         </Layout>
     );
