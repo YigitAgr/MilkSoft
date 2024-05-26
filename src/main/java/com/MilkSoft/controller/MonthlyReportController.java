@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 
 @RestController
@@ -33,10 +34,18 @@ public class MonthlyReportController {
         try {
             // Specify the command to run the Python script
             String pythonCommand = "python";
-            String scriptPath = "src/main/java/com/MilkSoft/dataread/Dataread.py";  // replace with the actual path to your Python script
+            String scriptPath = "Dataread.py";  // replace with the actual filename of your Python script
+            String csvFilePath = "Report.csv";
 
             // Create a ProcessBuilder
-            ProcessBuilder processBuilder = new ProcessBuilder(pythonCommand, scriptPath);
+            ProcessBuilder processBuilder = new ProcessBuilder(pythonCommand, scriptPath, csvFilePath);
+
+            // Set the working directory to the directory where the Python script is located
+            File workingDirectory = new File("src/main/java/com/MilkSoft/dataread");
+            processBuilder.directory(workingDirectory);
+
+            // Redirect the error stream to the output stream
+            processBuilder.redirectErrorStream(true);
 
             // Start the process
             Process process = processBuilder.start();
