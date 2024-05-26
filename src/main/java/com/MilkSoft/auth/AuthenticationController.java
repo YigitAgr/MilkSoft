@@ -1,6 +1,5 @@
 package com.MilkSoft.auth;
 
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,7 +27,6 @@ public class AuthenticationController {
     {
         return ResponseEntity.ok(service.registerAdmin(request));
     }
-
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(

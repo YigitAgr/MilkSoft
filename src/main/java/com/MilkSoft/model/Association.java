@@ -1,6 +1,5 @@
 package com.MilkSoft.model;
 
-
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -17,14 +16,21 @@ public class Association {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int Id;
+    private int id;
 
-    private String Name;
-    private String City;
+    private String name;
+    private String city;
 
     @OneToMany(mappedBy = "association")
     private List<Farm> farms;
 
     @OneToMany(mappedBy = "association", cascade = CascadeType.ALL)
     private List<TemperatureRecord> temperatureRecords;
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToMany(mappedBy = "association")
+    private List<MembershipRequest> membershipRequests;
 }

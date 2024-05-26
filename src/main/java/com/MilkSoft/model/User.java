@@ -1,6 +1,5 @@
 package com.MilkSoft.model;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +21,7 @@ import java.util.List;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String firstName;
     private String lastName;
@@ -31,6 +30,12 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Association association;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Farmer farmer;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

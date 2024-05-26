@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './Layout.css';
 import DashBoardAdmin from "../HomePageContent/DashBoardAdmin.jsx";
 import HomePageContentUser from "../HomePageContent/DashBoardUser.jsx";
+import MyAssociation from "../MyAssociation/MyAssociation.jsx";
+import AssociationUser from "../MyAssociation/AssociationUser.jsx";
 import { Link } from 'react-router-dom';
 import {
     MenuFoldOutlined,
@@ -11,7 +13,8 @@ import {
     VideoCameraOutlined,
     LogoutOutlined,
     HomeOutlined,
-    ContactsOutlined
+    ContactsOutlined,
+    BankOutlined
 } from '@ant-design/icons';
 import { Layout, Menu, Button, Avatar } from 'antd';
 import { useNavigate } from 'react-router-dom';
@@ -54,6 +57,10 @@ const LayoutPage = ({ children }) => { // Notice the children prop here
                 return <HomePageContentUser />;
             case 'DashBoardAdmin':
                 return <DashBoardAdmin />;
+            case 'MyAssociation':
+                return <MyAssociation />;
+            case 'AssociationUser':
+                return <AssociationUser />;
             // Add more cases if you have other pages to render
             default:
                 if(userRoles.includes('ADMIN')) {
@@ -109,6 +116,14 @@ const LayoutPage = ({ children }) => { // Notice the children prop here
                             >
                                 Cows
                             </Menu.Item>
+                            <Menu.Item
+                                className={`custom-selected-item ${selectedKey === 'user1' ? 'selected' : ''}`}
+                                style={{ color: 'white' }}
+                                key='user1'
+                                icon={<UserOutlined />}
+                            >
+                                <Link to="/associationuser">Association User</Link>
+                            </Menu.Item>
                         </>
                     )}
                     {userRoles.includes('ADMIN') && (
@@ -120,6 +135,14 @@ const LayoutPage = ({ children }) => { // Notice the children prop here
                                 icon={<HomeOutlined style={{fontSize:'24px'}} />}
                             >
                                 <Link to="/home">Dashboard</Link>
+                            </Menu.Item>
+                            <Menu.Item
+                                className={`custom-selected-item ${selectedKey === 'admin4' ? 'selected' : ''}`}
+                                style={{ color: 'white' }}
+                                key='admin4'
+                                icon={<BankOutlined  style={{fontSize:'24px'}}/>}
+                            >
+                                <Link to="/myassociation">My Association</Link>
                             </Menu.Item>
                             <Menu.Item
                                 className={`custom-selected-item ${selectedKey === 'admin2' ? 'selected' : ''}`}
