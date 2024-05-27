@@ -122,7 +122,7 @@ const LayoutPage = ({ children }) => { // Notice the children prop here
                                 key='user1'
                                 icon={<UserOutlined />}
                             >
-                                <Link to="/associationuser">Association User</Link>
+                                <Link to="/associationuser">Association</Link>
                             </Menu.Item>
                         </>
                     )}

@@ -1,5 +1,6 @@
 package com.MilkSoft.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -27,6 +28,7 @@ public class Association {
     @OneToMany(mappedBy = "association", cascade = CascadeType.ALL)
     private List<TemperatureRecord> temperatureRecords;
 
+    @JsonBackReference
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;

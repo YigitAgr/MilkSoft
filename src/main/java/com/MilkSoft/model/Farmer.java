@@ -1,5 +1,6 @@
 package com.MilkSoft.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +19,7 @@ public class Farmer {
     private String name;
     private String surname;
 
+    @JsonBackReference
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
