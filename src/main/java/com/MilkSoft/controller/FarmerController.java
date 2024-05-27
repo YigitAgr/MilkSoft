@@ -21,4 +21,9 @@ public class FarmerController {
     public List<AssociationDTO> getAllAssociations() {
         return farmerService.getAllAssociations();
     }
+
+    @GetMapping("/associations/{userId}")
+    public AssociationDTO getAssociationByUserId(@PathVariable Integer userId) {
+        return farmerService.getAssociationByUserId(userId);
+    }
 }

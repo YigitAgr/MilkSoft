@@ -1,5 +1,6 @@
 package com.MilkSoft.config;
 
+import com.MilkSoft.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -29,12 +30,18 @@ public class JwtService {
         return extractClaim(token, claims -> claims.get("roles", String.class));
     }
 
+    public Integer extractUserId(String token) {
+        return extractClaim(token, claims -> claims.get("userId", Integer.class));
+    }
+
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         // Add roles to the claims
         claims.put("roles", userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList()));
+        // Add user id to the claims
+        claims.put("userId", ((User) userDetails).getId());
         return generateToken(claims, userDetails);
     }
 
