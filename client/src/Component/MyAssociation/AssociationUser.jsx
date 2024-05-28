@@ -1,11 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {Card, Layout, Button} from "antd";
 import AssociationFindModal from "../Modals/AssociationFindModal.jsx";
+import axios from 'axios';
 
 const { Content } = Layout;
 
 const AssociationUser = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [association, setAssociation] = useState(null);
+
+    useEffect(() => {
+        const token = localStorage.getItem("decodedToken");
+        if (token && token.split('.').length === 3) {
+            try {
+                const decodedToken = JSON.parse(atob(token.split('.')[1]));
+                const userId = decodedToken.userId;
+                axios.get(`http://localhost:8080/api/farmer/associations/${userId}`)
+                    .then(response => {
+                        setAssociation(response.data);
+                    })
+                    .catch(error => {
+                        console.error('There was an error!', error);
+                    });
+            } catch (e) {
+                console.error('Invalid JWT token', e);
+            }
+        }
+    }, []);
 
     const showModal = () => {
         setIsModalVisible(true);
@@ -30,10 +51,26 @@ const AssociationUser = () => {
             }}
         >
             <Card style={{ width: '100%', height: '104%', position: 'relative' }}>
+                {association ? (
+                    <>
+                        <h2>{association.name}</h2>
+                        <p>{association.city}</p>
+                        {/* Display other association details here */}
+                    </>
+                ) : (
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        marginTop: '20%',
+                        fontSize: '20px',
+                    }}>
+                        <p>You are not registered in any associations.</p>
+                    </div>
+                )}
                 <Button
                     type="primary"
                     onClick={showModal}
-                    style={{ position: 'absolute', top: '10%', right: '5%'}}
+                    style={{position: 'absolute', top: '10%', right: '5%'}}
                 >
                     Find Association
                 </Button>

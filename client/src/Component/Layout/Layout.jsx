@@ -98,7 +98,7 @@ const LayoutPage = ({ children }) => { // Notice the children prop here
                                 key='1'
                                 icon={<HomeOutlined />}
                             >
-                                Dashboard
+                                <Link to="/home">Dashboard</Link>
                             </Menu.Item>
                             <Menu.Item
                                 className={`custom-selected-item ${selectedKey === '2' ? 'selected' : ''}`}
@@ -194,7 +194,9 @@ const LayoutPage = ({ children }) => { // Notice the children prop here
                                 style={{ backgroundColor: '#DBC4A4' }} />
                     </div>
                 </Header>
-                {renderContent()} // Render the content here
+                <Content className="white-scrollbar" style={{ overflowY: 'auto' }}>
+                    {renderContent()} // Render the content here
+                </Content>
             </Layout>
         </Layout>
     );

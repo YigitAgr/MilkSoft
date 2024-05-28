@@ -16,6 +16,11 @@ public class MembershipService {
     private final AssociationRepository associationRepository;
 
     public MembershipRequest sendRequest(int farmerId, int associationId) {
+        MembershipRequest existingRequest = membershipRequestRepository.findByFarmerIdAndAssociationId(farmerId, associationId);
+
+        if (existingRequest != null) {
+            throw new IllegalArgumentException("A request from this user to this association already exists.");
+        }
         Farmer farmer = farmerRepository.findById(farmerId).orElseThrow();
         Association association = associationRepository.findById(associationId).orElseThrow();
 

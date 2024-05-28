@@ -1,5 +1,6 @@
 import React from 'react';
 import { Layout, Row, Col, Card } from 'antd';
+import YearlyMilkProduction from "../Graphs/YearlyMilkProduction.jsx";
 
 const { Content } = Layout;
 
@@ -16,13 +17,13 @@ const DashBoardAdmin = () => {
         >
             <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
                 <Col span={6}>
-                    <Card title="Current MRR" bordered={false}>
+                    <Card title="Current Farmers" bordered={false}>
                         $12.4k
                     </Card>
                 </Col>
                 <Col span={6}>
-                    <Card title="Current Farmers" bordered={false}>
-                        100
+                    <Card title="Milk Sales Per Month" bordered={false}>
+                        100Lt
                     </Card>
                 </Col>
                 <Col span={6}>
@@ -36,15 +37,19 @@ const DashBoardAdmin = () => {
                     </Card>
                 </Col>
             </Row>
-            <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
+            <Row className="equal-height" gutter={[16, 16]} style={{ marginBottom: 16 }}>
                 <Col span={16}>
-                    <Card title="Trend" bordered={false}>
-                        {/* Insert Trend Chart Here */}
+                    <Card title="Annual Milk Production by Month" bordered={false}>
+                        <div style={{ height: '25vw' }}> {/* Adjust this value as needed */}
+                        <YearlyMilkProduction></YearlyMilkProduction>
+                        </div>
                     </Card>
                 </Col>
                 <Col span={8}>
-                    <Card title="Sales" bordered={false}>
-                        {/* Insert Sales Chart Here */}
+                    <Card title="Pending Membership Request" bordered={false} className="big-card">
+                        <div style={{ height: '25vw' }}> {/* Adjust this value as needed */}
+                            {/* Placeholder content */}
+                        </div>
                     </Card>
                 </Col>
             </Row>

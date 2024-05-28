@@ -6,3 +6,6 @@
 .custom-selected-item:not(.selected) {
     background-color: transparent !important;
 }
+.white-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #bfbfbf;
+}

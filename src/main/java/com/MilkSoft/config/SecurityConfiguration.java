@@ -26,7 +26,7 @@ public class SecurityConfiguration {
         http
                 .csrf(csrf -> csrf.disable()) // Updated method for disabling CSRF
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/v1/auth/**","/api/farmer/**").permitAll() // Update to properly match your endpoints
+                        .requestMatchers("/api/v1/auth/**","/api/farmer/**","/api/v1/membership/**").permitAll() // Update to properly match your endpoints
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
