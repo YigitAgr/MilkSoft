@@ -1,8 +1,10 @@
 package com.MilkSoft.service;
 
 
+import com.MilkSoft.dto.FarmerFarmDTO;
 import com.MilkSoft.dto.MembershipRequestDTO;
 import com.MilkSoft.model.Association;
+import com.MilkSoft.model.Farmer;
 import com.MilkSoft.model.MembershipRequest;
 import com.MilkSoft.repository.AssociationRepository;
 import com.MilkSoft.repository.FarmerRepository;
@@ -43,6 +45,21 @@ public class AssociationService {
 
     public int getUserCount(Integer associationId) {
         return farmerRepository.countByAssociation_Id(associationId);
+    }
+
+    public List<FarmerFarmDTO> getFarmersAndFarms(Integer associationId) {
+        // Fetch all farmers associated with the given association ID
+        List<Farmer> farmers = farmerRepository.findAllByAssociation_Id(associationId);
+
+        // Map each farmer to a FarmerFarmDTO object
+        return farmers.stream()
+                .map(farmer -> {
+                    FarmerFarmDTO dto = new FarmerFarmDTO();
+                    dto.setFarmer(farmer);
+                    dto.setFarm(farmer.getFarm());
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 }
 

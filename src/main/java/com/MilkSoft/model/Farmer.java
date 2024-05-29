@@ -29,10 +29,12 @@ public class Farmer {
     @OneToMany(mappedBy = "farmer")
     private List<MembershipRequest> membershipRequests;
 
-
     @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "association_id")
     private Association association;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "farm_id", referencedColumnName = "id")
+    private Farm farm;
 }

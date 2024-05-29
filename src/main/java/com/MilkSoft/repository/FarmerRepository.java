@@ -9,4 +9,6 @@ public interface FarmerRepository extends JpaRepository<Farmer, Integer> {
     List<Farmer> findAll();
 
     int countByAssociation_Id(Integer associationId);
+
+    List<Farmer> findAllByAssociation_Id(Integer associationId);
 }

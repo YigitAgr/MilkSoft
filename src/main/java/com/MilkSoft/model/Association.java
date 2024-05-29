@@ -27,8 +27,6 @@ public class Association {
     @OneToMany(mappedBy = "association", cascade = CascadeType.ALL)
     private List<Farmer> farmers;
 
-    @OneToMany(mappedBy = "association")
-    private List<Farm> farms;
 
     @OneToMany(mappedBy = "association", cascade = CascadeType.ALL)
     private List<TemperatureRecord> temperatureRecords;
@@ -40,4 +38,8 @@ public class Association {
 
     @OneToMany(mappedBy = "association")
     private List<MembershipRequest> membershipRequests;
+
+    @JsonBackReference
+    @OneToMany(mappedBy = "association")
+    private List<Farm> farms;
 }
