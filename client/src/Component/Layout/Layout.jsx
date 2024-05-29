@@ -195,7 +195,7 @@ const LayoutPage = ({ children }) => { // Notice the children prop here
                     </div>
                 </Header>
                 <Content className="white-scrollbar" style={{ overflowY: 'auto' }}>
-                    {renderContent()} // Render the content here
+                    {renderContent()}
                 </Content>
             </Layout>
         </Layout>
