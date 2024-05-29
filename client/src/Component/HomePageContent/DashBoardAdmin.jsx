@@ -1,10 +1,53 @@
-import React from 'react';
-import { Layout, Row, Col, Card } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Layout, Row, Col, Card, Table } from 'antd';
+import axios from 'axios';
 import YearlyMilkProduction from "../Graphs/YearlyMilkProduction.jsx";
 
 const { Content } = Layout;
 
 const DashBoardAdmin = () => {
+    const [pendingRequests, setPendingRequests] = useState([]);
+
+    useEffect(() => {
+        console.log('useEffect started');
+        const token = localStorage.getItem("decodedToken");
+        console.log('Token:', token); // Debug line
+        if (token) {
+            try {
+                const decodedToken = JSON.parse(token);
+                const userId = decodedToken.userId;
+                console.log('Sending request for user:', userId); // Debug line
+                axios.get(`http://localhost:8080/api/association/pendingRequests/${userId}`)
+                    .then(response => {
+                        console.log('Response received', response.data);
+                        setPendingRequests(response.data);
+                    })
+                    .catch(error => {
+                        console.error('There was an error!', error);
+                    });
+            } catch (e) {
+                console.error('Invalid token', e);
+            }
+        } else {
+            console.log('Token is not valid or not in the expected format'); // Debug line
+        }
+        console.log('useEffect ended');
+    }, []);
+
+
+    const columns = [
+        {
+            title: 'Farmer Name',
+            dataIndex: 'farmerName',
+            key: 'farmerName',
+        },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
+        },
+    ];
+
     return (
         <Content
             style={{
@@ -22,7 +65,7 @@ const DashBoardAdmin = () => {
                     </Card>
                 </Col>
                 <Col span={6}>
-                    <Card title="Milk Sales Per Month" bordered={false}>
+                    <Card title="Milk Collected This Month" bordered={false}>
                         100Lt
                     </Card>
                 </Col>
@@ -48,7 +91,7 @@ const DashBoardAdmin = () => {
                 <Col span={8}>
                     <Card title="Pending Membership Request" bordered={false} className="big-card">
                         <div style={{ height: '25vw' }}> {/* Adjust this value as needed */}
-                            {/* Placeholder content */}
+                            <Table columns={columns} dataSource={pendingRequests} pagination={false} />
                         </div>
                     </Card>
                 </Col>
