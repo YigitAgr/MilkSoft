@@ -7,6 +7,37 @@ const { Content } = Layout;
 
 const DashBoardAdmin = () => {
     const [pendingRequests, setPendingRequests] = useState([]);
+    const [currentFarmers, setCurrentFarmers] = useState(0);
+
+
+
+    useEffect(() => {
+        const token = localStorage.getItem("decodedToken");
+        if (token) {
+            try {
+                const decodedToken = JSON.parse(token);
+                const userId = decodedToken.userId;
+                axios.get(`http://localhost:8080/api/association/pendingRequests/${userId}`)
+                    .then(response => {
+                        setPendingRequests(response.data);
+                    })
+                    .catch(error => {
+                        console.error('There was an error!', error);
+                    });
+
+                // New axios request for current farmers
+                axios.get(`http://localhost:8080/api/association/userCount/${userId}`)
+                    .then(response => {
+                        setCurrentFarmers(response.data);
+                    })
+                    .catch(error => {
+                        console.error('There was an error!', error);
+                    });
+            } catch (e) {
+                console.error('Invalid token', e);
+            }
+        }
+    }, []);
 
     useEffect(() => {
         console.log('useEffect started');
@@ -60,8 +91,8 @@ const DashBoardAdmin = () => {
         >
             <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
                 <Col span={6}>
-                    <Card title="Current Farmers" bordered={false}>
-                        $12.4k
+                    <Card title="Number Of Registered Farmers" bordered={false}>
+                        {currentFarmers} {/* Display current farmers count */}
                     </Card>
                 </Col>
                 <Col span={6}>

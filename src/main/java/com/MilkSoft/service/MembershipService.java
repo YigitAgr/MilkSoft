@@ -33,8 +33,21 @@ public class MembershipService {
     }
 
     public MembershipRequest respondToRequest(int requestId, MembershipRequest.RequestStatus status) {
-        MembershipRequest request = membershipRequestRepository.findById(requestId).orElseThrow();
+        MembershipRequest request = membershipRequestRepository.findById(requestId)
+                .orElseThrow(() -> new IllegalArgumentException("Request not found"));
+
         request.setStatus(status);
+
+        if (status == MembershipRequest.RequestStatus.ACCEPTED) {
+            Farmer farmer = request.getFarmer();
+            Association association = request.getAssociation();
+
+            farmer.setAssociation(association);
+            association.getFarmers().add(farmer);
+
+            farmerRepository.save(farmer);
+            associationRepository.save(association);
+        }
 
         return membershipRequestRepository.save(request);
     }

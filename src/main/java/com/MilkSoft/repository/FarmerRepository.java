@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface FarmerRepository extends JpaRepository<Farmer, Integer> {
     List<Farmer> findAll();
+
+    int countByAssociation_Id(Integer associationId);
 }

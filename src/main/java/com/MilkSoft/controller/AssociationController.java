@@ -20,4 +20,10 @@ public class AssociationController {
     public List<MembershipRequestDTO> getPendingRequests(@PathVariable Integer associationId) {
         return associationService.getPendingRequests(associationId);
     }
+
+    @GetMapping("/userCount/{associationId}")
+    public int getUserCount(@PathVariable Integer associationId) {
+        return associationService.getUserCount(associationId);
+    }
+
 }

@@ -10,7 +10,8 @@ const PendingRequests = () => {
 
 
     const Accept = (record) => {
-        const token = localStorage.getItem("decodedToken");
+        let token = localStorage.getItem("decodedToken");
+        token = btoa(unescape(encodeURIComponent(token)));
         axios.post(`http://localhost:8080/api/v1/membership/respondRequest?requestId=${record.id}&status=ACCEPTED`, {}, {
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -25,7 +26,8 @@ const PendingRequests = () => {
     };
 
     const Reject = (record) => {
-        const token = localStorage.getItem("decodedToken");
+        let token = localStorage.getItem("decodedToken");
+        token = btoa(unescape(encodeURIComponent(token)));
         axios.post(`http://localhost:8080/api/v1/membership/respondRequest?requestId=${record.id}&status=REJECTED`, {}, {
             headers: {
                 'Authorization': `Bearer ${token}`

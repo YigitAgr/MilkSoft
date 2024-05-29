@@ -1,6 +1,7 @@
 package com.MilkSoft.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -21,6 +22,10 @@ public class Association {
 
     private String name;
     private String city;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "association", cascade = CascadeType.ALL)
+    private List<Farmer> farmers;
 
     @OneToMany(mappedBy = "association")
     private List<Farm> farms;

@@ -1,7 +1,8 @@
 package com.MilkSoft.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "farmers")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Farmer {
 
     @Id
@@ -20,12 +22,17 @@ public class Farmer {
     private String name;
     private String surname;
 
-    @JsonBackReference
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @JsonManagedReference
     @OneToMany(mappedBy = "farmer")
     private List<MembershipRequest> membershipRequests;
+
+
+    @JsonManagedReference
+    @ManyToOne
+    @JoinColumn(name = "association_id")
+    private Association association;
+
 }
