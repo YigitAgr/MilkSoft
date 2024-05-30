@@ -50,7 +50,7 @@ const AssociationUser = () => {
                 borderRadius: '20px',
             }}
         >
-            <Card style={{ width: '100%', height: '104%', position: 'relative' }}>
+            <Card style={{ width: '100%', height: '38vw', position: 'relative' }}>
                 {association ? (
                     <>
                         <h2>{association.name}</h2>

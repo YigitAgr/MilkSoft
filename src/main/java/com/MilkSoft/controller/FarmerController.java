@@ -2,6 +2,7 @@ package com.MilkSoft.controller;
 
 import com.MilkSoft.dto.AssociationDTO;
 import com.MilkSoft.model.Association;
+import com.MilkSoft.model.Farm;
 import com.MilkSoft.model.Farmer;
 import com.MilkSoft.service.FarmerService;
 import org.springframework.web.bind.annotation.*;
@@ -25,5 +26,16 @@ public class FarmerController {
     @GetMapping("/associations/{userId}")
     public AssociationDTO getAssociationByUserId(@PathVariable Integer userId) {
         return farmerService.getAssociationByUserId(userId);
+    }
+
+    @PostMapping("/createFarm")
+    public Farm createFarm(@RequestParam("farmerId") int farmerId, @RequestParam("name") String name) {
+        return farmerService.createFarm(farmerId, name);
+    }
+
+
+    @GetMapping("/farmer/{userId}")
+    public int getFarmerIdByUserId(@PathVariable Integer userId) {
+        return farmerService.getFarmerIdByUserId(userId);
     }
 }

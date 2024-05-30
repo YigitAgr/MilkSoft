@@ -55,7 +55,9 @@ public class AssociationService {
         return farmers.stream()
                 .map(farmer -> {
                     FarmerFarmDTO dto = new FarmerFarmDTO();
-                    dto.setFarmer(farmer);
+                    dto.setId(farmer.getId());
+                    dto.setName(farmer.getName());
+                    dto.setSurname(farmer.getSurname());
                     dto.setFarm(farmer.getFarm());
                     return dto;
                 })

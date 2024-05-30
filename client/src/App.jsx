@@ -7,6 +7,7 @@ import ProtectedRoute from "./ProtectedRoute/ProtectedRoute.jsx";
 import RegisterForm from "./Page/RegisterPage/RegisterUser.jsx";
 import MyAssociationPage from "./Page/MyAssocition/MyAssociationPage.jsx";
 import AssociationUserPage from "./Page/MyAssocition/AssociationUserPage.jsx";
+import FarmsPageUser from "./Page/FarmsPage/FarmsPageUser.jsx";
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
             <Route path={"/farms"} element={<ProtectedRoute><FarmsPage /></ProtectedRoute>} />
             <Route path={"/myassociation"} element={<ProtectedRoute><MyAssociationPage /></ProtectedRoute>} />
             <Route path={"/associationuser"} element={<ProtectedRoute><AssociationUserPage /></ProtectedRoute>} />
+            <Route path={"/myfarm"} element={<ProtectedRoute><FarmsPageUser /></ProtectedRoute>} />
         </Routes>
       </Router>
   )
