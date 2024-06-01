@@ -26,6 +26,7 @@ const AssociationUser = () => {
                 console.error('Invalid JWT token', e);
             }
         }
+        console.log(association);
     }, []);
 
     const showModal = () => {
@@ -39,7 +40,6 @@ const AssociationUser = () => {
     const handleCancel = () => {
         setIsModalVisible(false);
     };
-
     return (
         <Content
             style={{

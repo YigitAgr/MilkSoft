@@ -1,6 +1,7 @@
 package com.MilkSoft.controller;
 
 import com.MilkSoft.dto.AssociationDTO;
+import com.MilkSoft.dto.CreateFarmDTO;
 import com.MilkSoft.model.Association;
 import com.MilkSoft.model.Farm;
 import com.MilkSoft.model.Farmer;
@@ -29,13 +30,12 @@ public class FarmerController {
     }
 
     @PostMapping("/createFarm")
-    public Farm createFarm(@RequestParam("farmerId") int farmerId, @RequestParam("name") String name) {
-        return farmerService.createFarm(farmerId, name);
+    public Farm createFarm(@RequestBody CreateFarmDTO createFarmDTO) {
+        return farmerService.createFarm(createFarmDTO);
     }
-
-
-    @GetMapping("/farmer/{userId}")
-    public int getFarmerIdByUserId(@PathVariable Integer userId) {
+    @GetMapping("/{userId}")
+    public Integer getFarmerIdByUserId(@PathVariable Integer userId) {
         return farmerService.getFarmerIdByUserId(userId);
     }
+
 }

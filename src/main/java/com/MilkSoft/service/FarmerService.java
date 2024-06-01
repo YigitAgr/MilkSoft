@@ -1,6 +1,7 @@
 package com.MilkSoft.service;
 
 import com.MilkSoft.dto.AssociationDTO;
+import com.MilkSoft.dto.CreateFarmDTO;
 import com.MilkSoft.model.Association;
 import com.MilkSoft.model.Farm;
 import com.MilkSoft.model.Farmer;
@@ -57,20 +58,24 @@ public class FarmerService {
         }
     }
 
-    public Farm createFarm(int farmerId, String name) {
-        Farmer farmer = farmerRepository.findById(farmerId)
+
+    public Farm createFarm(CreateFarmDTO createFarmDTO) {
+        // Find the farmer by ID
+        Farmer farmer = farmerRepository.findById(createFarmDTO.getFarmerId())
                 .orElseThrow(() -> new RuntimeException("Farmer not found"));
 
+        // Create a new Farm object
         Farm farm = new Farm();
-        farm.setName(name);
+        farm.setName(createFarmDTO.getFarmName());
         farm.setFarmer(farmer);
 
+        // Save the farm in the database
         return farmRepository.save(farm);
     }
 
-    public int getFarmerIdByUserId(Integer userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        return user.getFarmer().getId();
+    public Integer getFarmerIdByUserId(Integer userId) {
+        return farmerRepository.findByUserId(userId)
+                .map(Farmer::getId)
+                .orElseThrow(() -> new RuntimeException("Farmer not found"));
     }
 }

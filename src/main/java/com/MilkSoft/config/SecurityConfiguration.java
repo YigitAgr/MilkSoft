@@ -18,18 +18,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class SecurityConfiguration {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
-
     private final AuthenticationProvider authenticationProvider;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Updated method for disabling CSRF
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/v1/auth/**",
-                                "/api/farmer/**",
-                                "/api/v1/membership/**",
-                                "/api/association/**").permitAll() // Update to properly match your endpoints
+                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/farmer/**").permitAll() // Protect farmer endpoints
+                        .requestMatchers("/api/v1/membership/**").permitAll()
+                        .requestMatchers("/api/association/**").permitAll()
+                        .requestMatchers("/api/v1/farm/createFarm").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
@@ -47,12 +47,12 @@ public class SecurityConfiguration {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:5174","http://localhost:5173")
+                        .allowedOrigins("http://localhost:5174", "http://localhost:5173")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                                .allowedHeaders("*")
-                                .allowCredentials(true);
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
             }
         };
     }
-
 }
+
