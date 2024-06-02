@@ -4,9 +4,12 @@ import com.MilkSoft.dto.AssociationDTO;
 import com.MilkSoft.dto.CreateFarmDTO;
 import com.MilkSoft.model.Association;
 import com.MilkSoft.model.Farm;
+import com.MilkSoft.dto.IdsDTO;
 import com.MilkSoft.model.Farmer;
 import com.MilkSoft.service.FarmerService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 @RestController
@@ -33,9 +36,20 @@ public class FarmerController {
     public Farm createFarm(@RequestBody CreateFarmDTO createFarmDTO) {
         return farmerService.createFarm(createFarmDTO);
     }
+
     @GetMapping("/{userId}")
-    public Integer getFarmerIdByUserId(@PathVariable Integer userId) {
-        return farmerService.getFarmerIdByUserId(userId);
+    public IdsDTO getIdsByUserId(@PathVariable Integer userId) {
+        return farmerService.getIdsByUserId(userId);
+    }
+
+    @GetMapping("/{userId}/farm")
+    public Farm getFarmByUserId(@PathVariable Integer userId) {
+        return farmerService.getFarmByUserId(userId);
+    }
+
+    @DeleteMapping("/deleteFarm/{farmId}")
+    public void deleteFarm(@PathVariable Integer farmId) {
+        farmerService.deleteFarm(farmId);
     }
 
 }

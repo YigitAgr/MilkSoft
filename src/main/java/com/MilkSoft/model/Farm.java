@@ -1,6 +1,8 @@
 package com.MilkSoft.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -27,9 +29,11 @@ public class Farm {
 
     private String Breed;
 
+
     @OneToMany(mappedBy = "farm",cascade = CascadeType.ALL)
     private List<Cow> cows;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "farm")
     private Farmer farmer;
 

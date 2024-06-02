@@ -1,64 +1,77 @@
-import {Input, Modal} from "antd";
-import React, { useState } from "react";
+import { Input, Modal } from "antd";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const CreateFarmModal = ({ isModalVisible, handleOk, handleCancel}) => {
+const CreateFarmModal = ({ isModalVisible, handleOk, handleCancel, setAlertMessage, setIsAlertVisible }) => {
     const [farmName, setFarmName] = useState('');
 
-
+    useEffect(() => {
+        if (isModalVisible) {
+            setFarmName('');
+        }
+    }, [isModalVisible]);
 
     const handleCreateFarm = async () => {
-        // Retrieve token directly from local storage
         const token = localStorage.getItem('token');
-        console.log("token1",token);
         if (token) {
             try {
-                // Decode JWT token payload
                 const decodedToken = JSON.parse(atob(token.split('.')[1]));
                 const userId = decodedToken.userId;
 
-                // Make a GET request to get the farmer ID
                 const farmerResponse = await axios.get(`http://localhost:8080/api/farmer/${userId}`, {
-                    headers: { Authorization: `Bearer ${token}` } // Use the correct token
+                    headers: { Authorization: `Bearer ${token}` }
                 });
-                const farmerId = farmerResponse.data;
-                console.log("farmerId1",farmerId);
+                const { farmerId, associationId } = farmerResponse.data;
 
-                // Ensure the first request has completed before starting the second
                 if (farmerResponse.status === 200) {
-                    // Make a POST request to create the farm
                     const response = await axios.post('http://localhost:8080/api/farmer/createFarm', {
                         farmerId: farmerId,
-                        name: farmName,
+                        associationId: associationId,
+                        farmName: farmName,
                     }, {
-                        headers: { 'Authorization': `Bearer ${token}` } // Use the correct token
+                        headers: { 'Authorization': `Bearer ${token}` }
                     });
-                    console.log("farmerId,FarmNmae",farmerId,farmName);
-                    console.log("token2",token);
+
                     if (response.status === 200) {
-                        console.log('Farm created successfully');
+                        setAlertMessage({
+                            type: 'success',
+                            message: 'Success',
+                            description: 'Farm created successfully',
+                        });
                     } else {
-                        console.error('Failed to create farm');
+                        setAlertMessage({
+                            type: 'error',
+                            message: 'Error',
+                            description: 'Failed to create farm',
+                        });
                     }
                 }
             } catch (e) {
                 if (e.response && e.response.status === 403) {
-                    console.error('Authorization error: Invalid token');
-                    console.error(e.response.data);
+                    setAlertMessage({
+                        type: 'error',
+                        message: 'Authorization error',
+                        description: 'Invalid token',
+                    });
                 } else {
-                    console.error(e);
+                    setAlertMessage({
+                        type: 'error',
+                        message: 'Error',
+                        description: 'An unexpected error occurred',
+                    });
                 }
             }
         } else {
-            console.error('Token not found');
+            setAlertMessage({
+                type: 'error',
+                message: 'Error',
+                description: 'Token not found',
+            });
         }
+
+        setIsAlertVisible(true);
+        handleOk(); // Close the modal after creating the farm
     };
-
-
-
-
-
-
 
     return (
         <Modal
@@ -68,16 +81,18 @@ const CreateFarmModal = ({ isModalVisible, handleOk, handleCancel}) => {
             okText="Create"
             onCancel={handleCancel}
             wrapClassName="my-modal-class"
+            okButtonProps={{ disabled: !farmName }} // Disable the button if the input is empty
         >
-            <div className="white-scrollbar" style={{height: '250px', overflow: 'auto'}}>
+            <div className="white-scrollbar" style={{ height: '250px', overflow: 'auto' }}>
                 <Input
                     placeholder="Farm Name"
-                    style={{marginTop: '5%'}}
+                    style={{ marginTop: '5%' }}
+                    value={farmName}
                     onChange={e => setFarmName(e.target.value)}
                 />
             </div>
         </Modal>
     );
-}
+};
 
 export default CreateFarmModal;
