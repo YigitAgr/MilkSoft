@@ -75,6 +75,9 @@ const LayoutPage = ({ children }) => {
             case 'user1':
                 navigate('/associationuser');
                 break;
+            case '3':
+                navigate('/mycows');
+                break
             case 'admin4':
                 navigate('/myassociation');
                 break;

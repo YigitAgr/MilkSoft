@@ -27,9 +27,9 @@ public class FarmerController {
         return farmerService.getAllAssociations();
     }
 
-    @GetMapping("/associations/{userId}")
-    public AssociationDTO getAssociationByUserId(@PathVariable Integer userId) {
-        return farmerService.getAssociationByUserId(userId);
+    @GetMapping("/associations/farmer/{farmerId}")
+    public AssociationDTO getAssociationByFarmerId(@PathVariable Integer farmerId) {
+        return farmerService.getAssociationByFarmerId(farmerId);
     }
 
     @PostMapping("/createFarm")

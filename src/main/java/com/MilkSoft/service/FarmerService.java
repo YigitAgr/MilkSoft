@@ -49,19 +49,6 @@ public class FarmerService {
                 .collect(Collectors.toList());
     }
 
-    public AssociationDTO getAssociationByUserId(Integer userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        Association association = user.getAssociation();
-        if (association != null) {
-            AssociationDTO dto = new AssociationDTO();
-            dto.setId(association.getId());
-            dto.setName(association.getName());
-            dto.setCity(association.getCity());
-            return dto;
-        } else {
-            throw new RuntimeException("User is not associated with any association");
-        }
-    }
 
 
     public Farm createFarm(CreateFarmDTO createFarmDTO) {
@@ -137,5 +124,23 @@ public class FarmerService {
 
         // Delete the farm from the database
         farmRepository.delete(farm);
+    }
+
+    public AssociationDTO getAssociationByFarmerId(Integer farmerId) {
+        // Find the farmer by ID
+        Farmer farmer = farmerRepository.findById(farmerId)
+                .orElseThrow(() -> new RuntimeException("Farmer not found"));
+
+        // Get the association of the farmer
+        Association association = farmer.getAssociation();
+
+        // Convert the association to AssociationDTO
+        AssociationDTO dto = new AssociationDTO();
+        dto.setId(association.getId());
+        dto.setName(association.getName());
+        dto.setCity(association.getCity());
+
+        // Return the AssociationDTO
+        return dto;
     }
 }

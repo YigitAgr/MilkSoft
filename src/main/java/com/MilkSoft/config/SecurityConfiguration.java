@@ -29,6 +29,8 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/farmer/**").permitAll() // Protect farmer endpoints
                         .requestMatchers("/api/v1/membership/**").permitAll()
                         .requestMatchers("/api/association/**").permitAll()
+                        .requestMatchers("/api/cow/**").permitAll()
+                        .requestMatchers("/api/farm/**").permitAll()
                         .requestMatchers("/api/v1/farm/createFarm").permitAll()
                         .anyRequest().authenticated()
                 )
