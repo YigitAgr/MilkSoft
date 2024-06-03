@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import {Card, Layout, Button} from "antd";
+import { Card, Layout, Button, notification } from "antd";
 import axios from 'axios';
-import CreateCowModal from '../Modals/CreateCowModal.jsx'; // Import the CreateCowModal component
+import CreateCowModal from '../Modals/CreateCowModal.jsx';
 
 const { Content } = Layout;
 
 const CowUser = () => {
-    const [isModalVisible, setIsModalVisible] = useState(false); // Add this line
+    const [isModalVisible, setIsModalVisible] = useState(false);
     const [farmId, setFarmId] = useState(null);
 
     const showModal = () => {
@@ -31,7 +31,8 @@ const CowUser = () => {
                 const farmerResponse = await axios.get(`http://localhost:8080/api/farmer/${userId}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
-                const { farmerId, associationId } = farmerResponse.data;
+                const { farmerId } = farmerResponse.data;
+
                 // Now use the farmerId to get the farmId
                 const farmResponse = await axios.get(`http://localhost:8080/api/farm/getFarmId/${farmerId}`, {
                     headers: { Authorization: `Bearer ${token}` }
@@ -48,31 +49,40 @@ const CowUser = () => {
         fetchFarmId();
     }, []);
 
+    const openNotification = (type, message, description) => {
+        notification[type]({
+            message: message,
+            description: description,
+            placement: 'topRight',
+            onClose: () => console.log('Notification was closed.'),
+        });
+    };
+
     return (
         <Content
             style={{
                 margin: '24px 16px',
                 padding: 24,
                 minHeight: 500,
-                background: '#f5f5f5', // You can customize the background color
-                borderRadius: '20px', // You can customize the border radius
+                background: '#f5f5f5',
+                borderRadius: '20px',
             }}
         >
             <Card
                 title="My Cows"
                 bordered={false}
-                style={{height:'38vw'}}
-                extra={<Button type="primary" onClick={showModal}>Add Cow</Button>} // Modify this line
-            >
-            </Card>
+                style={{ height: '38vw' }}
+                extra={<Button type="primary" onClick={showModal}>Add Cow</Button>}
+            />
             <CreateCowModal
                 isModalVisible={isModalVisible}
                 handleOk={handleOk}
                 handleCancel={handleCancel}
                 farmId={farmId}
+                openNotification={openNotification}
             />
         </Content>
     );
-}
+};
 
 export default CowUser;
