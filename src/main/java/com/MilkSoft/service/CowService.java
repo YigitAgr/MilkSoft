@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -46,15 +47,15 @@ public class CowService {
                 .orElseThrow(() -> new RuntimeException("Farm not found with id " + cowDTO.getFarmId()));
         cow.setFarm(farm);
 
-        // Set father by ear tag
-        if (cowDTO.getFatherEarTag() != null) {
+        // Set father by ear tag (if provided)
+        if (cowDTO.getFatherEarTag() != null && !cowDTO.getFatherEarTag().isEmpty()) {
             Cow father = cowRepository.findByEarTag(cowDTO.getFatherEarTag())
                     .orElseThrow(() -> new RuntimeException("Father cow not found with ear tag " + cowDTO.getFatherEarTag()));
             cow.setFather(father);
         }
 
-        // Set mother by ear tag
-        if (cowDTO.getMotherEarTag() != null) {
+        // Set mother by ear tag (if provided)
+        if (cowDTO.getMotherEarTag() != null && !cowDTO.getMotherEarTag().isEmpty()) {
             Cow mother = cowRepository.findByEarTag(cowDTO.getMotherEarTag())
                     .orElseThrow(() -> new RuntimeException("Mother cow not found with ear tag " + cowDTO.getMotherEarTag()));
             cow.setMother(mother);
@@ -63,10 +64,35 @@ public class CowService {
         farm.getCows().add(cow);
 
         farmRepository.save(farm);
-        return cowRepository.save(cow);
+        return cow;
     }
 
     public void deleteCow(int id) {
         cowRepository.deleteById(id);
     }
+
+    public List<Cow> getAllCows() {
+        return cowRepository.findAll();
+    }
+
+    public Cow editCow(int id, CowDTO cowDTO) {
+        // Find the cow by its ID
+        Cow cow = cowRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cow not found with id " + id));
+
+        // Update the cow's properties with the data from the CowDTO
+        cow.setEarTag(cowDTO.getEarTag());
+        cow.setBreed(cowDTO.getBreed());
+        cow.setBirthDate(cowDTO.getBirthDate());
+        cow.setIsAdult(cowDTO.getIsAdult());
+        cow.setIsPregnant(cowDTO.getIsPregnant());
+
+        // Save the updated cow back to the database
+        cowRepository.save(cow);
+
+        // Return the updated cow
+        return cow;
+    }
+
+
 }

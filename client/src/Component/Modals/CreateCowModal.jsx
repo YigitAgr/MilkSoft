@@ -1,11 +1,11 @@
-import { Input, Modal, DatePicker, Checkbox, Select } from "antd";
+import { Input, Modal, DatePicker, Checkbox, Select, notification } from "antd";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const { Option } = Select;
 
-const CreateCowModal = ({ isModalVisible, handleOk, handleCancel, openNotification, farmId }) => {
-    const [earTag, setEarTag] = useState('');
+const CreateCowModal = ({ isModalVisible, handleOk, handleCancel, farmId, addCow }) => {
+   const [earTag, setEarTag] = useState('');
     const [breed, setBreed] = useState(null);
     const [birthDate, setBirthDate] = useState(null);
     const [isAdult, setIsAdult] = useState(false);
@@ -25,6 +25,15 @@ const CreateCowModal = ({ isModalVisible, handleOk, handleCancel, openNotificati
         }
     }, [isModalVisible]);
 
+    const openNotification = (type, message, description) => {
+        notification[type]({
+            message: message,
+            description: description,
+            placement: 'topRight',
+            duration: 3
+        });
+    };
+
     const handleCreateCow = async () => {
         const cowData = {
             earTag: earTag,
@@ -42,6 +51,7 @@ const CreateCowModal = ({ isModalVisible, handleOk, handleCancel, openNotificati
 
             if (response.status === 200) {
                 handleOk(); // Close the modal
+                addCow(response.data); // Add the new cow to the parent component's state
                 openNotification('success', 'Cow created successfully', '');
             } else {
                 openNotification('error', 'Failed to create cow', '');
@@ -51,8 +61,10 @@ const CreateCowModal = ({ isModalVisible, handleOk, handleCancel, openNotificati
             if (error.response) {
                 openNotification('error', error.response.data.message, '');
             } else if (error.request) {
+                openNotification('error', 'No response from server', '');
                 console.log(error.request);
             } else {
+                openNotification('error', 'Error: ' + error.message, '');
                 console.log('Error', error.message);
             }
         }
@@ -107,13 +119,13 @@ const CreateCowModal = ({ isModalVisible, handleOk, handleCancel, openNotificati
                     Is Pregnant
                 </Checkbox>
                 <Input
-                    placeholder="Father Ear Tag"
+                    placeholder="Father Ear Tag (optional)"
                     style={{ marginTop: '5%' }}
                     value={fatherEarTag}
                     onChange={e => setFatherEarTag(e.target.value)}
                 />
                 <Input
-                    placeholder="Mother Ear Tag"
+                    placeholder="Mother Ear Tag (optional)"
                     style={{ marginTop: '5%' }}
                     value={motherEarTag}
                     onChange={e => setMotherEarTag(e.target.value)}

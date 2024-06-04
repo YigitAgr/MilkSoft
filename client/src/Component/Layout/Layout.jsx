@@ -47,6 +47,9 @@ const LayoutPage = ({ children }) => {
             case '/myfarm':
                 setSelectedKey('2');
                 break;
+            case '/mycows': // Add this case
+                setSelectedKey('3');
+                break;
             case '/associationuser':
                 setSelectedKey('user1');
                 break;

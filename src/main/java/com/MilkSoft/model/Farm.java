@@ -29,7 +29,7 @@ public class Farm {
 
     private String Breed;
 
-
+    @JsonManagedReference
     @OneToMany(mappedBy = "farm",cascade = CascadeType.ALL)
     private List<Cow> cows;
 

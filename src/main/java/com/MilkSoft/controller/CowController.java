@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/cow")
 public class CowController {
@@ -23,5 +25,16 @@ public class CowController {
     public ResponseEntity<String> deleteCow(@PathVariable int id) {
         cowService.deleteCow(id);
         return ResponseEntity.ok("Cow deleted successfully");
+    }
+
+
+    @GetMapping("/all")
+    public List<Cow> getAllCows() {
+        return cowService.getAllCows();
+    }
+
+    @PutMapping("/edit/{id}")
+    public Cow editCow(@PathVariable int id, @RequestBody CowDTO cowDTO) {
+        return cowService.editCow(id, cowDTO);
     }
 }

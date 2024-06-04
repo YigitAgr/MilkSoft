@@ -1,17 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { Card, Layout, Button, notification } from "antd";
+import { Card, Layout, Button, notification, Pagination, Empty } from "antd";
 import axios from 'axios';
 import CreateCowModal from '../Modals/CreateCowModal.jsx';
+import CowCards from "./CowCards.jsx";
 
 const { Content } = Layout;
 
 const CowUser = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [farmId, setFarmId] = useState(null);
-
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
     const showModal = () => {
         setIsModalVisible(true);
     };
+
+    const addCow = (newCow) => {
+        setCows(prevCows => [...prevCows, newCow]);
+    };
+
+
+    const [cows, setCows] = useState([]);
 
     const handleOk = () => {
         setIsModalVisible(false);
@@ -19,6 +28,20 @@ const CowUser = () => {
 
     const handleCancel = () => {
         setIsModalVisible(false);
+    };
+
+    const fetchCows = async () => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            try {
+                const response = await axios.get('http://localhost:8080/api/cow/all', {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                setCows(response.data);
+            } catch (error) {
+                console.error('Failed to fetch cows: ', error);
+            }
+        }
     };
 
     const fetchFarmId = async () => {
@@ -47,6 +70,7 @@ const CowUser = () => {
 
     useEffect(() => {
         fetchFarmId();
+        fetchCows();
     }, []);
 
     const openNotification = (type, message, description) => {
@@ -57,6 +81,8 @@ const CowUser = () => {
             onClose: () => console.log('Notification was closed.'),
         });
     };
+
+
 
     return (
         <Content
@@ -71,15 +97,29 @@ const CowUser = () => {
             <Card
                 title="My Cows"
                 bordered={false}
-                style={{ height: '38vw' }}
                 extra={<Button type="primary" onClick={showModal}>Add Cow</Button>}
-            />
+            >
+                {cows.length > 0 ? (
+                    <>
+                        <CowCards currentPage={currentPage} itemsPerPage={itemsPerPage} cows={cows} />
+                        <Pagination
+                            current={currentPage}
+                            total={cows.length} // You need to pass the total number of cows here
+                            pageSize={itemsPerPage}
+                            onChange={page => setCurrentPage(page)}
+                        />
+                    </>
+                ) : (
+                    <Empty description="No Data" />
+                )}
+            </Card>
             <CreateCowModal
                 isModalVisible={isModalVisible}
                 handleOk={handleOk}
                 handleCancel={handleCancel}
                 farmId={farmId}
                 openNotification={openNotification}
+                addCow={addCow} // Pass the addCow function to the CreateCowModal
             />
         </Content>
     );
