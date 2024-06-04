@@ -1,0 +1,7 @@
+.custom-card-title {
+    border-bottom: none !important;
+}
+
+.ant-card-head-title.custom-card-title {
+    border-bottom: none !important;
+}

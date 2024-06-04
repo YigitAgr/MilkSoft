@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Card, Layout, Button, notification, Pagination, Empty } from "antd";
+import { Card, Layout, Button, notification, Pagination, Empty, Input } from "antd";
 import axios from 'axios';
 import CreateCowModal from '../Modals/CreateCowModal.jsx';
 import CowCards from "./CowCards.jsx";
@@ -11,6 +11,7 @@ const CowUser = () => {
     const [farmId, setFarmId] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [searchTerm, setSearchTerm] = useState('');
     const showModal = () => {
         setIsModalVisible(true);
     };
@@ -19,6 +20,10 @@ const CowUser = () => {
         setCows(prevCows => [...prevCows, newCow]);
     };
 
+
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+    };
 
     const [cows, setCows] = useState([]);
 
@@ -99,9 +104,15 @@ const CowUser = () => {
                 bordered={false}
                 extra={<Button type="primary" onClick={showModal}>Add Cow</Button>}
             >
+                <Input
+                    style={{ width: '200px' }}
+                    placeholder="Search by ear tag"
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                />
                 {cows.length > 0 ? (
                     <>
-                        <CowCards currentPage={currentPage} itemsPerPage={itemsPerPage} cows={cows} />
+                        <CowCards currentPage={currentPage} itemsPerPage={itemsPerPage} cows={cows.filter(cow => cow.earTag.includes(searchTerm))} /> {/* Filter cows by search term */}
                         <Pagination
                             current={currentPage}
                             total={cows.length} // You need to pass the total number of cows here
