@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Card, Modal, Layout, Form, Input, Checkbox } from "antd";
+import { Card, Modal, Layout, Form, Input, Checkbox, notification } from "antd";
+import axios from "axios";
 import holsteinJpg from "../../assets/holstein.jpg";
 import zavotJpg from "../../assets/zavot.jpg";
 import jerseyJpg from "../../assets/jersey.jpg";
@@ -101,20 +102,63 @@ const CowForm = ({ selectedCow, setSelectedCow }) => (
     </Form>
 );
 
-const CowCards = ({ currentPage, itemsPerPage, cows }) => {
+const CowCards = ({ currentPage, itemsPerPage, cows, updateCow }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedCow, setSelectedCow] = useState(null);
     const [isEditMode, setIsEditMode] = useState(false);
+
+
+    const openNotification = (type, message, description) => {
+        notification[type]({
+            message: message,
+            description: description,
+            placement: 'topRight',
+            duration: 3
+        });
+    };
 
     const showModal = (cow) => {
         setSelectedCow(cow);
         setIsModalVisible(true);
     };
 
-    const handleOk = () => {
+    const handleOk = async () => {
         if (isEditMode) {
             // If the form is in edit mode, send the updated cow information to the server
-            // ...
+            const cowData = {
+                earTag: selectedCow.earTag,
+                breed: selectedCow.breed,
+                birthDate: selectedCow.birthDate,
+                isAdult: selectedCow.isAdult,
+                isPregnant: selectedCow.isPregnant,
+                farmId: selectedCow.farmId,
+                fatherEarTag: selectedCow.fatherEarTag,
+                motherEarTag: selectedCow.motherEarTag
+            };
+
+            try {
+                const response = await axios.put(`http://localhost:8080/api/cow/edit/${selectedCow.id}`, cowData);
+
+                if (response.status === 200) {
+                    setIsModalVisible(false); // Close the modal
+                    setIsEditMode(false); // Switch back to view mode
+                    updateCow(response.data); // Update the cow in the parent component's state
+                    openNotification('success', 'Cow updated successfully', '');
+                } else {
+                    openNotification('error', 'Failed to update cow', '');
+                }
+            } catch (error) {
+                console.error('Failed to update cow: ', error);
+                if (error.response) {
+                    openNotification('error', error.response.data.message, '');
+                } else if (error.request) {
+                    openNotification('error', 'No response from server', '');
+                    console.log(error.request);
+                } else {
+                    openNotification('error', 'Error: ' + error.message, '');
+                    console.log('Error', error.message);
+                }
+            }
         } else {
             // If the form is not in edit mode, switch to edit mode
             setIsEditMode(true);

@@ -16,6 +16,10 @@ const CowUser = () => {
         setIsModalVisible(true);
     };
 
+    const updateCow = (updatedCow) => {
+        setCows(cows.map(cow => cow.id === updatedCow.id ? updatedCow : cow));
+    };
+
     const addCow = (newCow) => {
         setCows(prevCows => [...prevCows, newCow]);
     };
@@ -112,7 +116,7 @@ const CowUser = () => {
                 />
                 {cows.length > 0 ? (
                     <>
-                        <CowCards currentPage={currentPage} itemsPerPage={itemsPerPage} cows={cows.filter(cow => cow.earTag.includes(searchTerm))} /> {/* Filter cows by search term */}
+                        <CowCards currentPage={currentPage} itemsPerPage={itemsPerPage} updateCow={updateCow} cows={cows.filter(cow => cow.earTag.includes(searchTerm))} /> {/* Filter cows by search term */}
                         <Pagination
                             current={currentPage}
                             total={cows.length} // You need to pass the total number of cows here
