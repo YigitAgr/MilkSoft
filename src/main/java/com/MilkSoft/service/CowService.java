@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CowService {
@@ -95,4 +96,26 @@ public class CowService {
     }
 
 
+
+    public List<Cow> getCowsByFarmId(int farmId) {
+        return cowRepository.findByFarmId(farmId);
+    }
+
+    public Integer getCowCountByFarmId(int farmId) {
+        return cowRepository.countByFarmId(farmId);
+    }
+
+    public List<Cow> getCowsInCalfByFarmId(int farmId) {
+        // Filter the list of cows by isPregnant being true
+        List<Cow> cowsInCalf = cowRepository.findByFarmId(farmId)
+                .stream()
+                .filter(Cow::getIsPregnant)
+                .collect(Collectors.toList());
+
+        if (cowsInCalf.isEmpty()) {
+            throw new RuntimeException("No cows in calf found for farm ID: " + farmId);
+        }
+
+        return cowsInCalf;
+    }
 }

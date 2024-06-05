@@ -37,4 +37,22 @@ public class CowController {
     public Cow editCow(@PathVariable int id, @RequestBody CowDTO cowDTO) {
         return cowService.editCow(id, cowDTO);
     }
+
+
+    @GetMapping("/farm/{farmId}")
+    public List<Cow> getCowsByFarmId(@PathVariable int farmId) {
+        return cowService.getCowsByFarmId(farmId);
+    }
+
+    @GetMapping("/count/{farmId}")
+    public Integer getCowCount(@PathVariable int farmId) {
+        return cowService.getCowCountByFarmId(farmId);
+    }
+
+    @GetMapping("/cowincalf/{farmId}")
+    public List<Cow> getCowsInCalf(@PathVariable int farmId) {
+        return cowService.getCowsInCalfByFarmId(farmId);
+    }
+
+
 }

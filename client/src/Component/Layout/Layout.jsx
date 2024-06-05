@@ -18,6 +18,7 @@ import {
 } from '@ant-design/icons';
 import { Layout, Menu, Button, Avatar, Spin } from 'antd';
 import { useNavigate, useLocation } from 'react-router-dom';
+import MilkSoftLogo from '../../assets/MilkSoft.svg'; // Adjust the path to where your logo is located
 
 const { Header, Content, Sider } = Layout;
 
@@ -117,10 +118,15 @@ const LayoutPage = ({ children }) => {
 
     return (
         <Layout style={{ height: '100vh', width: '100vw', border: 'none', background: '#F0F8EA' }}>
-            <Sider trigger={null}
-                   collapsible collapsed={collapsed}
-                   style={{ backgroundColor: "#7E5920", paddingTop: '150px' }}>
-                <div className="demo-logo-vertical" />
+            <Sider
+                trigger={null}
+                collapsible
+                collapsed={collapsed}
+                style={{ backgroundColor: "#7E5920", paddingTop: '20px' }}
+            >
+                <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                    <img src={MilkSoftLogo} alt="MilkSoft Logo" style={{ width: '80%', maxWidth: '150px' }} />
+                </div>
                 <Menu
                     style={{ backgroundColor: "#7E5920", height: '100%' }}
                     theme="dark"

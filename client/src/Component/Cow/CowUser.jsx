@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Card, Layout, Button, notification, Pagination, Empty, Input } from "antd";
+import { Card, Layout, Button, notification, Pagination, Empty, Input, Spin } from "antd"; // Import Spin component from Ant Design
 import axios from 'axios';
 import CreateCowModal from '../Modals/CreateCowModal.jsx';
 import CowCards from "./CowCards.jsx";
@@ -12,6 +12,9 @@ const CowUser = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
+    const [cows, setCows] = useState([]);
+    const [loading, setLoading] = useState(false); // State for loading indicator
+
     const showModal = () => {
         setIsModalVisible(true);
     };
@@ -24,12 +27,9 @@ const CowUser = () => {
         setCows(prevCows => [...prevCows, newCow]);
     };
 
-
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
     };
-
-    const [cows, setCows] = useState([]);
 
     const handleOk = () => {
         setIsModalVisible(false);
@@ -39,16 +39,19 @@ const CowUser = () => {
         setIsModalVisible(false);
     };
 
-    const fetchCows = async () => {
+    const fetchCows = async (farmId) => {
+        setLoading(true); // Set loading to true while fetching data
         const token = localStorage.getItem('token');
-        if (token) {
+        if (token && farmId) {
             try {
-                const response = await axios.get('http://localhost:8080/api/cow/all', {
+                const response = await axios.get(`http://localhost:8080/api/cow/farm/${farmId}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setCows(response.data);
             } catch (error) {
                 console.error('Failed to fetch cows: ', error);
+            } finally {
+                setLoading(false); // Set loading to false after fetching data (whether successful or not)
             }
         }
     };
@@ -59,11 +62,11 @@ const CowUser = () => {
             try {
                 const decodedToken = JSON.parse(atob(token.split('.')[1]));
                 const userId = decodedToken.userId;
-
+                console.log("userıd",userId)
                 const farmerResponse = await axios.get(`http://localhost:8080/api/farmer/${userId}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
-                const { farmerId } = farmerResponse.data;
+                const { farmerId, associationId } = farmerResponse.data;
 
                 // Now use the farmerId to get the farmId
                 const farmResponse = await axios.get(`http://localhost:8080/api/farm/getFarmId/${farmerId}`, {
@@ -71,6 +74,7 @@ const CowUser = () => {
                 });
                 const fetchedFarmId = farmResponse.data;
                 setFarmId(fetchedFarmId);
+                return fetchedFarmId;
             } catch (e) {
                 console.error('Failed to fetch data: ', e);
             }
@@ -78,8 +82,13 @@ const CowUser = () => {
     };
 
     useEffect(() => {
-        fetchFarmId();
-        fetchCows();
+        const initialize = async () => {
+            const fetchedFarmId = await fetchFarmId();
+            if (fetchedFarmId) {
+                await fetchCows(fetchedFarmId);
+            }
+        };
+        initialize();
     }, []);
 
     const openNotification = (type, message, description) => {
@@ -90,8 +99,6 @@ const CowUser = () => {
             onClose: () => console.log('Notification was closed.'),
         });
     };
-
-
 
     return (
         <Content
@@ -107,6 +114,7 @@ const CowUser = () => {
                 title="My Cows"
                 bordered={false}
                 extra={<Button type="primary" onClick={showModal}>Add Cow</Button>}
+                loading={loading} // Add loading prop to Card component
             >
                 <Input
                     style={{ width: '200px' }}
