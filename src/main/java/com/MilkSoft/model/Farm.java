@@ -43,9 +43,10 @@ public class Farm {
     private Association association;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "farm", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "farm", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<MonthlyMilkProduction> monthlyMilkProductions;
 
+    // Other methods...
 
     public void addMonthlyMilkProduction(MonthlyMilkProduction monthlyMilkProduction) {
         monthlyMilkProductions.add(monthlyMilkProduction);

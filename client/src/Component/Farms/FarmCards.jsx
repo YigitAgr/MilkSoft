@@ -81,7 +81,6 @@ const FarmCards = ({ currentPage, itemsPerPage, farms, updateFarm }) => {
         setIsModalVisible(false);
     };
 
-    // Calculate the farms to display based on pagination
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const currentFarms = farms.slice(startIndex, endIndex);
@@ -98,12 +97,12 @@ const FarmCards = ({ currentPage, itemsPerPage, farms, updateFarm }) => {
                     isModalVisible={isModalVisible}
                     handleOk={handleOk}
                     handleCancel={handleCancel}
-                    farm={selectedFarm} // Pass selected farm data
+                    farm={selectedFarm}
+                    updateFarm={updateFarm} // Pass the updateFarm function
                 />
             )}
         </Content>
     );
 };
-
 
 export default FarmCards;
