@@ -41,4 +41,20 @@ public class Farm {
     @ManyToOne
     @JoinColumn(name = "association_id")
     private Association association;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "farm", cascade = CascadeType.ALL)
+    private List<MonthlyMilkProduction> monthlyMilkProductions;
+
+
+    public void addMonthlyMilkProduction(MonthlyMilkProduction monthlyMilkProduction) {
+        monthlyMilkProductions.add(monthlyMilkProduction);
+        monthlyMilkProduction.setFarm(this);
+    }
+
+    public void removeMonthlyMilkProduction(MonthlyMilkProduction monthlyMilkProduction) {
+        monthlyMilkProductions.remove(monthlyMilkProduction);
+        monthlyMilkProduction.setFarm(null);
+    }
+
 }

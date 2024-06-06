@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Card, Layout, Button, notification, Pagination, Empty, Input, Spin, message } from "antd";
+import { Card, Layout, notification, Pagination, Empty, Input } from "antd";
 import axios from 'axios';
 import FarmCards from "./FarmCards.jsx";
 
@@ -14,14 +14,9 @@ const FarmsContent = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const showModal = () => {
-        setIsModalVisible(true);
-    };
-
     const updateFarm = (updatedFarm) => {
         setFarms(farms.map(farm => farm.id === updatedFarm.id ? updatedFarm : farm));
     };
-
 
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
@@ -70,10 +65,6 @@ const FarmsContent = () => {
         }
     };
 
-
-
-
-
     useEffect(() => {
         fetchFarms();
     }, []);
@@ -89,6 +80,9 @@ const FarmsContent = () => {
         }
     }, [error]);
 
+    // Filter farms based on search term
+    const filteredFarms = farms.filter(farm => farm.name && farm.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
     return (
         <Content
             style={{
@@ -102,7 +96,6 @@ const FarmsContent = () => {
             <Card
                 title="Farms"
                 bordered={false}
-                extra={<Button type="primary" onClick={showModal}>Add Farm</Button>}
                 loading={loading}
             >
                 <Input
@@ -111,13 +104,12 @@ const FarmsContent = () => {
                     value={searchTerm}
                     onChange={handleSearchChange}
                 />
-                {farms && farms.length > 0 ? (
+                {filteredFarms && filteredFarms.length > 0 ? (
                     <>
-                        <FarmCards currentPage={currentPage} itemsPerPage={itemsPerPage} updateFarm={updateFarm} farms={farms.filter(farm => farm.name && farm.name.includes(searchTerm))
-                        } />
+                        <FarmCards currentPage={currentPage} itemsPerPage={itemsPerPage} updateFarm={updateFarm} farms={filteredFarms} />
                         <Pagination
                             current={currentPage}
-                            total={farms.length}
+                            total={filteredFarms.length}
                             pageSize={itemsPerPage}
                             onChange={page => setCurrentPage(page)}
                         />
