@@ -9,6 +9,7 @@ import com.MilkSoft.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,5 +31,9 @@ public class FarmService {
         } else {
             return Optional.empty();
         }
+    }
+
+    public List<Farm> getFarmsByAssociationId(int associationId) {
+        return farmRepository.findByAssociationId(associationId);
     }
 }

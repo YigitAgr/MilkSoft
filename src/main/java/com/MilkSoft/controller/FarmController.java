@@ -1,10 +1,13 @@
 package com.MilkSoft.controller;
 
+import com.MilkSoft.model.Cow;
+import com.MilkSoft.model.Farm;
 import com.MilkSoft.service.FarmService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -20,5 +23,10 @@ public class FarmController {
         return ResponseEntity.ok(farmService.getFarmId(farmerId));
     }
 
+
+    @GetMapping("/getFarms/{associationId}")
+    public List<Farm> getFarmsByAssociationId(@PathVariable int associationId) {
+        return farmService.getFarmsByAssociationId(associationId);
+    }
 
 }

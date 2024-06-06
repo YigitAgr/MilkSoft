@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Card, Layout, Button, notification, Pagination, Empty, Input, Spin } from "antd"; // Import Spin component from Ant Design
+import {Card, Layout, Button, notification, Pagination, Empty, Input, Spin, message} from "antd";
 import axios from 'axios';
 import CreateCowModal from '../Modals/CreateCowModal.jsx';
 import CowCards from "./CowCards.jsx";
@@ -13,10 +13,19 @@ const CowUser = () => {
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
     const [cows, setCows] = useState([]);
-    const [loading, setLoading] = useState(false); // State for loading indicator
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     const showModal = () => {
         setIsModalVisible(true);
+    };
+
+    const openNotification = (type, message, description) => {
+        notification[type]({
+            message,
+            description,
+            placement: 'topRight',
+        });
     };
 
     const updateCow = (updatedCow) => {
@@ -40,9 +49,10 @@ const CowUser = () => {
     };
 
     const fetchCows = async (farmId) => {
-        setLoading(true); // Set loading to true while fetching data
+        if (!farmId) return;
+        setLoading(true);
         const token = localStorage.getItem('token');
-        if (token && farmId) {
+        if (token) {
             try {
                 const response = await axios.get(`http://localhost:8080/api/cow/farm/${farmId}`, {
                     headers: { Authorization: `Bearer ${token}` }
@@ -51,7 +61,7 @@ const CowUser = () => {
             } catch (error) {
                 console.error('Failed to fetch cows: ', error);
             } finally {
-                setLoading(false); // Set loading to false after fetching data (whether successful or not)
+                setLoading(false);
             }
         }
     };
@@ -62,13 +72,10 @@ const CowUser = () => {
             try {
                 const decodedToken = JSON.parse(atob(token.split('.')[1]));
                 const userId = decodedToken.userId;
-                console.log("userıd",userId)
                 const farmerResponse = await axios.get(`http://localhost:8080/api/farmer/${userId}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 const { farmerId, associationId } = farmerResponse.data;
-
-                // Now use the farmerId to get the farmId
                 const farmResponse = await axios.get(`http://localhost:8080/api/farm/getFarmId/${farmerId}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
@@ -77,6 +84,15 @@ const CowUser = () => {
                 return fetchedFarmId;
             } catch (e) {
                 console.error('Failed to fetch data: ', e);
+                if (e.response && e.response.data && e.response.data.message) {
+                    setError(e.response.data.message);
+                } else {
+                    notification.open({
+                        message: 'To begin, you\'ll need to establish a farm.',
+                        type: 'info',
+                    });
+
+                }
             }
         }
     };
@@ -91,14 +107,16 @@ const CowUser = () => {
         initialize();
     }, []);
 
-    const openNotification = (type, message, description) => {
-        notification[type]({
-            message: message,
-            description: description,
-            placement: 'topRight',
-            onClose: () => console.log('Notification was closed.'),
-        });
-    };
+    useEffect(() => {
+        if (error) {
+            notification.error({
+                message: 'Error',
+                description: error,
+                placement: 'topRight',
+            });
+            setError(null);
+        }
+    }, [error]);
 
     return (
         <Content
@@ -113,8 +131,8 @@ const CowUser = () => {
             <Card
                 title="My Cows"
                 bordered={false}
-                extra={<Button type="primary" onClick={showModal}>Add Cow</Button>}
-                loading={loading} // Add loading prop to Card component
+                extra={farmId && <Button type="primary" onClick={showModal}>Add Cow</Button>}
+                loading={loading}
             >
                 <Input
                     style={{ width: '200px' }}
@@ -124,10 +142,10 @@ const CowUser = () => {
                 />
                 {cows.length > 0 ? (
                     <>
-                        <CowCards currentPage={currentPage} itemsPerPage={itemsPerPage} updateCow={updateCow} cows={cows.filter(cow => cow.earTag.includes(searchTerm))} /> {/* Filter cows by search term */}
+                        <CowCards currentPage={currentPage} itemsPerPage={itemsPerPage} updateCow={updateCow} cows={cows.filter(cow => cow.earTag.includes(searchTerm))} />
                         <Pagination
                             current={currentPage}
-                            total={cows.length} // You need to pass the total number of cows here
+                            total={cows.length}
                             pageSize={itemsPerPage}
                             onChange={page => setCurrentPage(page)}
                         />
@@ -136,14 +154,16 @@ const CowUser = () => {
                     <Empty description="No Data" />
                 )}
             </Card>
-            <CreateCowModal
-                isModalVisible={isModalVisible}
-                handleOk={handleOk}
-                handleCancel={handleCancel}
-                farmId={farmId}
-                openNotification={openNotification}
-                addCow={addCow} // Pass the addCow function to the CreateCowModal
-            />
+            {farmId && (
+                <CreateCowModal
+                    isModalVisible={isModalVisible}
+                    handleOk={handleOk}
+                    handleCancel={handleCancel}
+                    farmId={farmId}
+                    openNotification={openNotification}
+                    addCow={addCow}
+                />
+            )}
         </Content>
     );
 };

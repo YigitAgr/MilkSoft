@@ -48,7 +48,7 @@ const LayoutPage = ({ children }) => {
             case '/myfarm':
                 setSelectedKey('2');
                 break;
-            case '/mycows': // Add this case
+            case '/mycows':
                 setSelectedKey('3');
                 break;
             case '/associationuser':
@@ -81,7 +81,7 @@ const LayoutPage = ({ children }) => {
                 break;
             case '3':
                 navigate('/mycows');
-                break
+                break;
             case 'admin4':
                 navigate('/myassociation');
                 break;
@@ -116,6 +116,10 @@ const LayoutPage = ({ children }) => {
         }
     };
 
+    const toggleSider = () => {
+        setCollapsed(!collapsed);
+    };
+
     return (
         <Layout style={{ height: '100vh', width: '100vw', border: 'none', background: '#F0F8EA' }}>
             <Sider
@@ -125,7 +129,7 @@ const LayoutPage = ({ children }) => {
                 style={{ backgroundColor: "#7E5920", paddingTop: '20px' }}
             >
                 <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-                    <img src={MilkSoftLogo} alt="MilkSoft Logo" style={{ width: '80%', maxWidth: '150px' }} />
+                    <img src={MilkSoftLogo} alt="MilkSoft Logo" style={{ width: '80%', maxWidth: '200px' }} />
                 </div>
                 <Menu
                     style={{ backgroundColor: "#7E5920", height: '100%' }}
@@ -226,7 +230,7 @@ const LayoutPage = ({ children }) => {
                     <Button
                         type="text"
                         icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                        onClick={() => setCollapsed(!collapsed)}
+                        onClick={toggleSider}
                         style={{
                             fontSize: '16px',
                             width: 64,

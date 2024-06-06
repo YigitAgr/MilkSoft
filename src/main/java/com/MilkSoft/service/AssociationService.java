@@ -2,6 +2,7 @@ package com.MilkSoft.service;
 
 
 import com.MilkSoft.dto.FarmerFarmDTO;
+import com.MilkSoft.dto.IdsDTO;
 import com.MilkSoft.dto.MembershipRequestDTO;
 import com.MilkSoft.model.Association;
 import com.MilkSoft.model.Farmer;
@@ -63,5 +64,11 @@ public class AssociationService {
                 })
                 .collect(Collectors.toList());
     }
+
+    public Integer getAssociationIdByUserId(Integer userId) {
+        return associationRepository.findAssociationIdByUserId(userId);
+    }
+
+
 }
 

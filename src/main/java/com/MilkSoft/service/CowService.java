@@ -46,7 +46,9 @@ public class CowService {
         // Set farm
         Farm farm = farmRepository.findById(cowDTO.getFarmId())
                 .orElseThrow(() -> new RuntimeException("Farm not found with id " + cowDTO.getFarmId()));
-        cow.setFarm(farm);
+
+        // Increment totalCows count
+        farm.setTotalCows(farm.getTotalCows() + 1);
 
         // Set father by ear tag (if provided)
         if (cowDTO.getFatherEarTag() != null && !cowDTO.getFatherEarTag().isEmpty()) {
@@ -62,6 +64,7 @@ public class CowService {
             cow.setMother(mother);
         }
 
+        cow.setFarm(farm);
         farm.getCows().add(cow);
 
         farmRepository.save(farm);

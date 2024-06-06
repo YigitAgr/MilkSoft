@@ -1,6 +1,7 @@
 package com.MilkSoft.controller;
 
 import com.MilkSoft.dto.FarmerFarmDTO;
+import com.MilkSoft.dto.IdsDTO;
 import com.MilkSoft.dto.MembershipRequestDTO;
 import com.MilkSoft.service.AssociationService;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,12 @@ public class AssociationController {
     @GetMapping("/farmersAndFarms/{associationId}")
     public List<FarmerFarmDTO> getFarmersAndFarms(@PathVariable Integer associationId) {
         return associationService.getFarmersAndFarms(associationId);
+    }
+
+
+    @GetMapping("/getAssociationId/{userId}")
+    public Integer getAssociationIdByUserId(@PathVariable Integer userId) {
+        return associationService.getAssociationIdByUserId(userId);
     }
 
 
