@@ -1,9 +1,9 @@
-import React, {useState, useEffect} from "react";
-import { Modal, Input, Table, Button  } from "antd";
+import React, { useState, useEffect } from "react";
+import { Modal, Input, Table, Button } from "antd";
 import './AssociationFindModal.css';
-import axios from 'axios'; // Make sure to install this package
+import axios from 'axios';
 
-const AssociationFindModal = ({ isModalVisible, handleOk, handleCancel }) => {
+const AssociationFindModal = ({ isModalVisible, handleOk, handleCancel, farmerId }) => {
     const [search, setSearch] = useState('');
     const [data, setData] = useState([]);
 
@@ -41,26 +41,15 @@ const AssociationFindModal = ({ isModalVisible, handleOk, handleCancel }) => {
         },
     ];
 
-
     const handleButtonClick = (record) => {
-        const token = localStorage.getItem("decodedToken");
-        let userId;
-        if (token && token.split('.').length === 3) {
-            try {
-                const decodedToken = JSON.parse(atob(token.split('.')[1]));
-                userId = decodedToken.userId;
-            } catch (e) {
-                console.error('Invalid JWT token', e);
-            }
-        }
-
+        const token = localStorage.getItem("token");
         const associationId = record.id;
 
-        const utf8Token = unescape(encodeURIComponent(token));
+        console.log("associationId, farmerId, token", associationId, farmerId, token);
 
-        axios.post(`http://localhost:8080/api/v1/membership/sendRequest?farmerId=${userId}&associationId=${associationId}`, null, {
+        axios.post(`http://localhost:8080/api/v1/membership/sendRequest?farmerId=${farmerId}&associationId=${associationId}`, null, {
             headers: {
-                'Authorization': `Bearer ${btoa(unescape(encodeURIComponent(token)))}`
+                'Authorization': `Bearer ${token}`
             }
         })
             .then(response => {

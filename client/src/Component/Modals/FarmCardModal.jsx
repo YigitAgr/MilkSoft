@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const FarmCardModal = ({ isModalVisible, handleOk, handleCancel, farm, updateFarm }) => {
     const [month, setMonth] = useState('');
-    const [amount, setAmount] = useState('');
+    const [totalMilkProduced, setTotalMilkProduced] = useState('');
 
     // Set the current month in the format YYYY-MM when the component mounts
     useEffect(() => {
@@ -13,18 +13,17 @@ const FarmCardModal = ({ isModalVisible, handleOk, handleCancel, farm, updateFar
     }, []);
 
     const handleSubmit = async () => {
-        if (!month || !amount) {
+        if (!month || !totalMilkProduced) {
             message.error('Please fill in all fields.');
             return;
         }
 
         const token = localStorage.getItem('token');
-
         try {
-            const response = await axios.post('http://localhost:8080/api/monthlyMilkProduction', {
-                farm: { id: farm.id },
+            const response = await axios.post('http://localhost:8080/api/monthlyMilkProduction/addMilktoFarmer', {
+                farmId: farm.id,
                 month,
-                amount
+                totalMilkProduced
             }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -33,13 +32,23 @@ const FarmCardModal = ({ isModalVisible, handleOk, handleCancel, farm, updateFar
             updateFarm({ ...farm, monthlyMilkProductions: [...farm.monthlyMilkProductions, response.data] });
 
             message.success('Monthly milk production updated successfully.');
-            setAmount('');
+            setTotalMilkProduced('');
             handleOk(); // Close the modal
         } catch (error) {
+            console.log("error", error);
             console.error('Failed to update monthly milk production:', error);
             message.error('Failed to update monthly milk production.');
         }
     };
+
+    // Aggregate monthly milk production data
+    const aggregatedProduction = farm.monthlyMilkProductions.reduce((acc, production) => {
+        if (!acc[production.month]) {
+            acc[production.month] = 0;
+        }
+        acc[production.month] += production.totalMilkProduced;
+        return acc;
+    }, {});
 
     return (
         <Modal
@@ -49,13 +58,13 @@ const FarmCardModal = ({ isModalVisible, handleOk, handleCancel, farm, updateFar
             onCancel={handleCancel}
         >
             <p>Name: {farm.name}</p>
-            <p>Description: {farm.description}</p>
+            <p>Total Cows: {farm.totalCows}</p> {/* Display total cows */}
             <h3>Monthly Milk Production:</h3>
-            {farm.monthlyMilkProductions.length > 0 ? (
+            {Object.keys(aggregatedProduction).length > 0 ? (
                 <ul>
-                    {farm.monthlyMilkProductions.map((production, index) => (
+                    {Object.entries(aggregatedProduction).map(([month, totalProduction], index) => (
                         <li key={index}>
-                            Month: {production.month}, Production: {production.amount}
+                            Month: {month}, Total Production: {totalProduction}
                         </li>
                     ))}
                 </ul>
@@ -75,8 +84,8 @@ const FarmCardModal = ({ isModalVisible, handleOk, handleCancel, farm, updateFar
                 <Form.Item>
                     <Input
                         placeholder="Production Amount"
-                        value={amount}
-                        onChange={e => setAmount(e.target.value)}
+                        value={totalMilkProduced}
+                        onChange={e => setTotalMilkProduced(e.target.value)}
                     />
                 </Form.Item>
                 <Form.Item style={{ marginTop: '2%' }}> {/* Add margin to the right side */}

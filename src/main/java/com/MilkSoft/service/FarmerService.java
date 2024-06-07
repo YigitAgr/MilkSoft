@@ -85,10 +85,22 @@ public class FarmerService {
         IdsDTO idsDTO = new IdsDTO();
         Farmer farmer = farmerRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Farmer not found"));
+
         idsDTO.setFarmerId(farmer.getId());
-        idsDTO.setAssociationId(farmer.getAssociation().getId());
+
+        Association association = farmer.getAssociation();
+        if (association != null) {
+            idsDTO.setAssociationId(association.getId());
+        } else {
+            idsDTO.setAssociationId(null); // Set association ID to null if association is null
+        }
+
         return idsDTO;
     }
+
+
+
+
 
     public Farm getFarmByUserId(Integer userId) {
         // Find the farmer by user ID

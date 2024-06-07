@@ -1,3 +1,4 @@
+// AssociationUser.jsx
 import React, { useState, useEffect } from "react";
 import { Card, Layout, Button, Spin } from "antd";
 import AssociationFindModal from "../Modals/AssociationFindModal.jsx";
@@ -9,6 +10,7 @@ const AssociationUser = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [association, setAssociation] = useState(null);
     const [isLoading, setIsLoading] = useState(true); // Set initial loading state to true
+    const [farmerId, setFarmerId] = useState(null); // State to store farmerId
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -23,7 +25,8 @@ const AssociationUser = () => {
                 })
                     .then(idsResponse => {
                         const farmerId = idsResponse.data.farmerId;
-                        console.log("farmer ıd", farmerId);
+                        console.log("farmer id", farmerId);
+                        setFarmerId(farmerId); // Set the farmerId in state
 
                         // Second request to get the association using the farmerId
                         axios.get(`http://localhost:8080/api/farmer/associations/farmer/${farmerId}`)
@@ -105,10 +108,12 @@ const AssociationUser = () => {
                             Find Association
                         </Button>
                     )}
+                    {/* Pass farmerId as a prop to AssociationFindModal */}
                     <AssociationFindModal
                         isModalVisible={isModalVisible}
                         handleOk={handleOk}
                         handleCancel={handleCancel}
+                        farmerId={farmerId}
                     />
                 </Card>
             )}

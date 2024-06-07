@@ -8,8 +8,7 @@ const { Content } = Layout;
 const DashBoardAdmin = () => {
     const [pendingRequests, setPendingRequests] = useState([]);
     const [currentFarmers, setCurrentFarmers] = useState(0);
-
-
+    const [milkCollectedThisMonth, setMilkCollectedThisMonth] = useState(0);
 
     useEffect(() => {
         const token = localStorage.getItem("decodedToken");
@@ -17,54 +16,41 @@ const DashBoardAdmin = () => {
             try {
                 const decodedToken = JSON.parse(token);
                 const userId = decodedToken.userId;
+
+                // Fetch pending requests
                 axios.get(`http://localhost:8080/api/association/pendingRequests/${userId}`)
                     .then(response => {
                         setPendingRequests(response.data);
                     })
                     .catch(error => {
-                        console.error('There was an error!', error);
+                        console.error('There was an error fetching pending requests!', error);
                     });
 
-                // New axios request for current farmers
+                // Fetch current farmers
                 axios.get(`http://localhost:8080/api/association/userCount/${userId}`)
                     .then(response => {
                         setCurrentFarmers(response.data);
                     })
                     .catch(error => {
-                        console.error('There was an error!', error);
+                        console.error('There was an error fetching current farmers count!', error);
                     });
-            } catch (e) {
-                console.error('Invalid token', e);
-            }
-        }
-    }, []);
 
-    useEffect(() => {
-        console.log('useEffect started');
-        const token = localStorage.getItem("decodedToken");
-        console.log('Token:', token); // Debug line
-        if (token) {
-            try {
-                const decodedToken = JSON.parse(token);
-                const userId = decodedToken.userId;
-                console.log('Sending request for user:', userId); // Debug line
-                axios.get(`http://localhost:8080/api/association/pendingRequests/${userId}`)
+                // Fetch milk collected this month
+                axios.get(`http://localhost:8080/api/association/farmsMonthlyProduction/${userId}`)
                     .then(response => {
-                        console.log('Response received', response.data);
-                        setPendingRequests(response.data);
+                        const farms = response.data;
+                        const totalMilkCollected = farms.reduce((sum, farm) => sum + farm.currentMonthTotal, 0);
+                        setMilkCollectedThisMonth(totalMilkCollected);
                     })
                     .catch(error => {
-                        console.error('There was an error!', error);
+                        console.error('There was an error fetching milk collected this month!', error);
                     });
+
             } catch (e) {
                 console.error('Invalid token', e);
             }
-        } else {
-            console.log('Token is not valid or not in the expected format'); // Debug line
         }
-        console.log('useEffect ended');
     }, []);
-
 
     const columns = [
         {
@@ -97,7 +83,7 @@ const DashBoardAdmin = () => {
                 </Col>
                 <Col span={6}>
                     <Card title="Milk Collected This Month" bordered={false}>
-                        100Lt
+                        {milkCollectedThisMonth} Lt {/* Display milk collected this month */}
                     </Card>
                 </Col>
                 <Col span={6}>
@@ -115,7 +101,7 @@ const DashBoardAdmin = () => {
                 <Col span={16}>
                     <Card title="Annual Milk Production by Month" bordered={false}>
                         <div style={{ height: '25vw' }}> {/* Adjust this value as needed */}
-                        <YearlyMilkProduction></YearlyMilkProduction>
+                            <YearlyMilkProduction />
                         </div>
                     </Card>
                 </Col>

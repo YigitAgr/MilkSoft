@@ -1,5 +1,6 @@
 package com.MilkSoft.controller;
 
+import com.MilkSoft.dto.FarmMonthlyProductionDTO;
 import com.MilkSoft.dto.FarmerFarmDTO;
 import com.MilkSoft.dto.IdsDTO;
 import com.MilkSoft.dto.MembershipRequestDTO;
@@ -37,6 +38,11 @@ public class AssociationController {
     @GetMapping("/getAssociationId/{userId}")
     public Integer getAssociationIdByUserId(@PathVariable Integer userId) {
         return associationService.getAssociationIdByUserId(userId);
+    }
+
+    @GetMapping("/farmsMonthlyProduction/{associationId}")
+    public List<FarmMonthlyProductionDTO> getFarmsMonthlyProduction(@PathVariable Integer associationId) {
+        return associationService.getFarmsMonthlyProduction(associationId);
     }
 
 

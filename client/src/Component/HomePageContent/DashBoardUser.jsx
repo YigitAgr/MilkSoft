@@ -76,7 +76,7 @@ const HomePageContentAdmin = () => {
             <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
                 <Col span={6}>
                     <Card title="Cow count" bordered={false}>
-                        {cowCount !== null ? cowCount : 'Loading...'}
+                        {cowCount !== null ? cowCount : '0'}
                     </Card>
                 </Col>
                 <Col span={6}>

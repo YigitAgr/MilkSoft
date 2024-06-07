@@ -1,25 +1,30 @@
 // MyAssociation.jsx
 import React, { useState, useEffect } from "react";
-import {Card, Layout, Breadcrumb} from "antd";
+import { Card, Layout, Tabs } from "antd";
 import PendingRequests from '../BreadcrumbItems/Adminbreadcrumb/PendingRequests.jsx'; // import the PendingRequests component
 
 const { Content } = Layout;
+const { TabPane } = Tabs;
 
 const MyAssociation = () => {
-    const initialItem = localStorage.getItem("selectedItem") || "Home";
-    const [selectedItem, setSelectedItem] = useState(initialItem);
+    const initialItem = localStorage.getItem("selectedTab") || "1";
+    const [selectedTab, setSelectedTab] = useState(initialItem);
 
-    const handleClick = (item) => {
-        setSelectedItem(item);
-        localStorage.setItem("selectedItem", item);
+    const handleTabChange = (key) => {
+        console.log("Selected tab:", key);
+        setSelectedTab(key);
+        localStorage.setItem("selectedTab", key);
     };
 
-    // Clear the selected item from local storage when the component unmounts
     useEffect(() => {
         return () => {
-            localStorage.removeItem("selectedItem");
+            localStorage.removeItem("selectedTab");
         };
     }, []);
+
+    useEffect(() => {
+        console.log("Selected tab updated:", selectedTab);
+    }, [selectedTab]);
 
     return (
         <Content
@@ -31,14 +36,17 @@ const MyAssociation = () => {
                 borderRadius: '20px',
             }}
         >
-            <Breadcrumb>
-                <Breadcrumb.Item style={{ fontWeight: selectedItem === "Home" ? "bold" : "normal" }} onClick={() => handleClick("Home")}>Home</Breadcrumb.Item>
-                <Breadcrumb.Item style={{ fontWeight: selectedItem === "My Association" ? "bold" : "normal" }} onClick={() => handleClick("My Association")}>My Association</Breadcrumb.Item>
-                <Breadcrumb.Item style={{ fontWeight: selectedItem === "Pending Requests" ? "bold" : "normal" }} onClick={() => handleClick("Pending Requests")}>Pending Requests</Breadcrumb.Item>
-            </Breadcrumb>
-            {selectedItem === "Home" && <Card title={"Home Content"}></Card>}
-            {selectedItem === "My Association" && <Card title={"My Association Content"}></Card>}
-            {selectedItem === "Pending Requests" && <PendingRequests />} {/* use the PendingRequests component */}
+            <Tabs activeKey={selectedTab} onChange={handleTabChange}>
+                <TabPane tab="Home" key="1">
+                    <Card title={"Home Content"}></Card>
+                </TabPane>
+                <TabPane tab="My Association" key="2">
+                    <Card title={"My Association Content"}></Card>
+                </TabPane>
+                <TabPane tab="Pending Requests" key="3">
+                    <PendingRequests />
+                </TabPane>
+            </Tabs>
         </Content>
     );
 }
