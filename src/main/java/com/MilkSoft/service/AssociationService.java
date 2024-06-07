@@ -1,11 +1,9 @@
 package com.MilkSoft.service;
 
 
-import com.MilkSoft.dto.FarmMonthlyProductionDTO;
-import com.MilkSoft.dto.FarmerFarmDTO;
+import com.MilkSoft.dto.*;
 import com.MilkSoft.model.MonthlyMilkProduction;
 import com.MilkSoft.dto.FarmMonthlyProductionDTO;
-import com.MilkSoft.dto.MembershipRequestDTO;
 import com.MilkSoft.model.Association;
 import com.MilkSoft.model.Farm;
 import com.MilkSoft.model.Farmer;
@@ -19,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -102,6 +101,31 @@ public class AssociationService {
 
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    public AssociationDTO getAssociationInfo(Integer associationId) {
+        Association association = associationRepository.findById(associationId)
+                .orElseThrow(() -> new RuntimeException("Association not found"));
+
+        AssociationDTO dto = new AssociationDTO();
+        dto.setId(association.getId());
+        dto.setName(association.getName());
+        dto.setCity(association.getCity());
+
+        return dto;
+    }
+
+    public Association updateAssociation(Integer associationId, UpdateAssociationDTO updateAssociationDTO) {
+        Optional<Association> optionalAssociation = associationRepository.findById(associationId);
+
+        if (optionalAssociation.isPresent()) {
+            Association association = optionalAssociation.get();
+            association.setName(updateAssociationDTO.getName());
+            association.setCity(updateAssociationDTO.getCity());
+            return associationRepository.save(association);
+        } else {
+            throw new RuntimeException("Association not found with id " + associationId);
+        }
     }
 }
 

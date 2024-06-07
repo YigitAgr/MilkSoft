@@ -1,9 +1,7 @@
 package com.MilkSoft.controller;
 
-import com.MilkSoft.dto.FarmMonthlyProductionDTO;
-import com.MilkSoft.dto.FarmerFarmDTO;
-import com.MilkSoft.dto.IdsDTO;
-import com.MilkSoft.dto.MembershipRequestDTO;
+import com.MilkSoft.dto.*;
+import com.MilkSoft.model.Association;
 import com.MilkSoft.service.AssociationService;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,6 +42,19 @@ public class AssociationController {
     public List<FarmMonthlyProductionDTO> getFarmsMonthlyProduction(@PathVariable Integer associationId) {
         return associationService.getFarmsMonthlyProduction(associationId);
     }
+
+
+    @GetMapping("/info/{associationId}")
+    public AssociationDTO getAssociationInfo(@PathVariable Integer associationId) {
+        return associationService.getAssociationInfo(associationId);
+    }
+
+    @PutMapping("/update/{associationId}")
+    public Association updateAssociation(@PathVariable Integer associationId, @RequestBody UpdateAssociationDTO updateAssociationDTO) {
+        return associationService.updateAssociation(associationId, updateAssociationDTO);
+    }
+
+
 
 
 }

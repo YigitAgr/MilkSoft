@@ -1,7 +1,8 @@
 // MyAssociation.jsx
 import React, { useState, useEffect } from "react";
 import { Card, Layout, Tabs } from "antd";
-import PendingRequests from '../BreadcrumbItems/Adminbreadcrumb/PendingRequests.jsx'; // import the PendingRequests component
+import PendingRequests from '../BreadcrumbItems/Adminbreadcrumb/PendingRequests.jsx';
+import MyAssociationTab from "../BreadcrumbItems/Adminbreadcrumb/MyAssociationTab.jsx";
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
@@ -37,11 +38,11 @@ const MyAssociation = () => {
             }}
         >
             <Tabs activeKey={selectedTab} onChange={handleTabChange}>
-                <TabPane tab="Home" key="1">
-                    <Card title={"Home Content"}></Card>
+                <TabPane tab="My Association" key="1">
+                        <MyAssociationTab/>
                 </TabPane>
-                <TabPane tab="My Association" key="2">
-                    <Card title={"My Association Content"}></Card>
+                <TabPane tab="Csv" key="2">
+                    <Card title={"Csv"}></Card>
                 </TabPane>
                 <TabPane tab="Pending Requests" key="3">
                     <PendingRequests />

@@ -88,6 +88,9 @@ const LayoutPage = ({ children }) => {
             case 'admin2':
                 navigate('/farms');
                 break;
+            case 'admin3':
+                navigate('/myRecords')
+                break;
             default:
                 navigate('/home');
                 break;
@@ -206,7 +209,7 @@ const LayoutPage = ({ children }) => {
                                 key='admin3'
                                 icon={<UploadOutlined style={{fontSize:'24px'}} />}
                             >
-                                Supplies
+                                Records
                             </Menu.Item>
                         </>
                     )}

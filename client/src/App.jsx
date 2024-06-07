@@ -9,6 +9,7 @@ import MyAssociationPage from "./Page/MyAssocition/MyAssociationPage.jsx";
 import AssociationUserPage from "./Page/MyAssocition/AssociationUserPage.jsx";
 import FarmsPageUser from "./Page/FarmsPage/FarmsPageUser.jsx";
 import CowPage from "./Page/CowPage/CowPage.jsx";
+import MonthPage from "./Page/MonthPage/MonthPage.jsx";
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
             <Route path={"/associationuser"} element={<ProtectedRoute><AssociationUserPage /></ProtectedRoute>} />
             <Route path={"/myfarm"} element={<ProtectedRoute><FarmsPageUser /></ProtectedRoute>} />
             <Route path={"/mycows"} element={<ProtectedRoute><CowPage /></ProtectedRoute>} />
+            <Route path={"/myRecords"} element={<ProtectedRoute><MonthPage /></ProtectedRoute>} />
         </Routes>
       </Router>
   )

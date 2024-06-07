@@ -31,6 +31,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/association/**").permitAll()
                         .requestMatchers("/api/cow/**").permitAll()
                         .requestMatchers("/api/farm/**").permitAll()
+                        .requestMatchers("/api/temperature-records/**").permitAll()
                         .requestMatchers("/api/monthlyMilkProduction/**").permitAll()
                         .requestMatchers("/api/v1/farm/createFarm").permitAll()
                         .anyRequest().authenticated()

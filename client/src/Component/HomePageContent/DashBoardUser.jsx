@@ -109,18 +109,6 @@ const HomePageContentAdmin = () => {
                     </Card>
                 </Col>
             </Row>
-            <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
-                <Col span={12}>
-                    <Card title="Support Tickets" bordered={false}>
-                        {/* Insert Support Tickets Here */}
-                    </Card>
-                </Col>
-                <Col span={12}>
-                    <Card title="Customer Demographic" bordered={false}>
-                        {/* Insert Customer Demographic Map Here */}
-                    </Card>
-                </Col>
-            </Row>
         </Content>
     );
 };

@@ -1,12 +1,12 @@
-package com.MilkSoft.dto;
+    package com.MilkSoft.dto;
 
-import lombok.Data;
+    import lombok.Data;
 
-@Data
-public class AssociationDTO {
-    private int id;
-    private String name;
-    private String city;
+    @Data
+    public class AssociationDTO {
+        private int id;
+        private String name;
+        private String city;
 
 
-}
+    }
