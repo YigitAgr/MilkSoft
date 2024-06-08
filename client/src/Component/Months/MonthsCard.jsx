@@ -1,9 +1,14 @@
 import React, { useState } from "react";
-import { Card, Pagination } from "antd";
+import { Card, Layout, Row, Col, Statistic, Empty } from "antd";
+import { ThermometerOutlined, CloudOutlined } from '@ant-design/icons';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import MonthsModal from "../Modals/MonthsModal.jsx";
+
+const { Content } = Layout;
 
 const cardStyle = {
-    width: '200px',
-    height: '150px',
+    width: '300px',
+    height: '300px',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
@@ -12,9 +17,11 @@ const cardStyle = {
     borderRadius: '10px',
     marginBottom: '30px',
     marginTop: '40px',
+    boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+    background: '#fff'
 };
 
-const containerStyle = {
+const contentStyle = {
     margin: '24px 16px',
     padding: 24,
     minHeight: 500,
@@ -22,45 +29,85 @@ const containerStyle = {
     borderRadius: '20px',
 };
 
-const MonthsCard = () => {
-    const months = [
-        'January', 'February', 'March', 'April',
-        'May', 'June', 'July', 'August',
-        'September', 'October', 'November', 'December'
-    ];
+const cardHeaderStyle = {
+    fontSize: '18px',
+    fontWeight: 'bold'
+};
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const pageSize = 6;
-    const startIndex = (currentPage - 1) * pageSize;
-    const endIndex = currentPage * pageSize;
-    const visibleMonths = months.slice(startIndex, endIndex);
+const MonthsCard = ({ currentPage, itemsPerPage, months, temperatureRecords }) => {
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [selectedMonth, setSelectedMonth] = useState(null);
+    const [loading, setLoading] = useState(false);
 
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
+    const showModal = (month) => {
+        setSelectedMonth(month);
+        setIsModalVisible(true);
     };
 
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const currentMonths = months.slice(startIndex, endIndex);
+
+    // Extract temperature records from the object
+    const selectedMonthRecords = selectedMonth ? temperatureRecords[selectedMonth] : [];
+
     return (
-        <div style={containerStyle}>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
-                {visibleMonths.map((month, index) => (
-                    <Card
-                        key={index}
-                        title={month}
-                        hoverable
-                        style={cardStyle}
-                    >
-                        {/* Content for each month goes here */}
-                    </Card>
+        <Content style={contentStyle}>
+            <Row gutter={[16, 16]}>
+                {currentMonths.map(month => (
+                    <Col span={8} key={month}>
+                        <Card
+                            hoverable
+                            style={cardStyle}
+                            onClick={() => showModal(month)} // Add onClick event to show modal
+                        >
+                            <div style={cardHeaderStyle}>{month}</div>
+                            {temperatureRecords[month] && temperatureRecords[month].length > 0 ? (
+                                <>
+                                    <ResponsiveContainer width="100%" height={100}>
+                                        <LineChart data={temperatureRecords[month]}>
+                                            <CartesianGrid strokeDasharray="3 3" />
+                                            <XAxis dataKey="month" />
+                                            <YAxis />
+                                            <Tooltip />
+                                            <Line type="monotone" dataKey="temperature" stroke="#8884d8" />
+                                            <Line type="monotone" dataKey="averageWet" stroke="#82ca9d" />
+                                        </LineChart>
+                                    </ResponsiveContainer>
+                                    <div style={{ display: 'flex', justifyContent: 'space-around', width: '100%', marginTop: '16px' }}>
+                                        <Statistic
+                                            title={<ThermometerOutlined />}
+                                            value={temperatureRecords[month][0].temperature}
+                                            suffix="°C"
+                                        />
+                                        <Statistic
+                                            title={<CloudOutlined />}
+                                            value={temperatureRecords[month][0].averageWet}
+                                            suffix="%"
+                                        />
+                                    </div>
+                                </>
+                            ) : (
+                                <Empty description="No Data" />
+                            )}
+                        </Card>
+                    </Col>
                 ))}
-            </div>
-            <Pagination
-                style={{ marginTop: '20px', textAlign: 'center' }}
-                current={currentPage}
-                pageSize={pageSize}
-                total={months.length}
-                onChange={handlePageChange}
-            />
-        </div>
+            </Row>
+            {selectedMonth && (
+                <MonthsModal
+                    visible={isModalVisible}
+                    loading={loading}
+                    temperatureRecords={selectedMonthRecords}
+                    month={selectedMonth}
+                    onClose={handleCancel}
+                />
+            )}
+        </Content>
     );
 };
 

@@ -1,6 +1,6 @@
 package com.MilkSoft.model;
 
-
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -19,11 +19,11 @@ public class TemperatureRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "temperatureRecord", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Temperature> temperatures;
 
     @ManyToOne
     @JoinColumn(name = "association_id")
     private Association association;
-
 }

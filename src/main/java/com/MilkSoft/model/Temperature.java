@@ -1,7 +1,6 @@
 package com.MilkSoft.model;
 
-
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -26,6 +25,6 @@ public class Temperature {
 
     @ManyToOne
     @JoinColumn(name = "temperature_record_id")
+    @JsonBackReference
     private TemperatureRecord temperatureRecord;
-
 }

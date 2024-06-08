@@ -2,14 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Button, Card, Layout, notification } from "antd";
 import axios from 'axios';
 import CreateFarmModal from "../Modals/CreateFarmModal.jsx";
-import FarmCards from "./FarmCards.jsx";
 
 const { Content } = Layout;
 
 const MyFarmUser = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [alertMessage, setAlertMessage] = useState(null);
-    const [farm, setFarm] = useState(null); // New state variable for the farm
+    const [farm, setFarm] = useState(null);
 
     const showModal = () => {
         setIsModalVisible(true);
@@ -23,27 +22,24 @@ const MyFarmUser = () => {
         setIsModalVisible(false);
     };
 
-    // Function to display notification
     const openNotification = (type, message) => {
         notification[type]({
             message: message,
             placement: 'topRight',
-            duration: 3, // Auto close after 3 seconds
+            duration: 3,
         });
     };
 
-    // Show notification when alertMessage is set
     useEffect(() => {
         if (alertMessage) {
             openNotification(alertMessage.type, alertMessage.message);
-            setAlertMessage(null); // Reset alert message after showing the notification
+            setAlertMessage(null);
         }
     }, [alertMessage]);
 
-    // New useEffect hook to fetch the farm
     useEffect(() => {
         const token = localStorage.getItem("token");
-        console.log('token:', token); // New console.log statement
+        console.log('token:', token);
         if (token && token.split('.').length === 3) {
             try {
                 const decodedToken = JSON.parse(atob(token.split('.')[1]));
@@ -82,7 +78,6 @@ const MyFarmUser = () => {
                         <p>Name: {farm.name}</p>
                         <p>Total Cows: {farm.totalCows}</p>
                         <p>Daily Milk Production: {farm.dailyMilkProduction}</p>
-                        {/* Add more fields as needed */}
                     </div>
                 )}
             </Card>

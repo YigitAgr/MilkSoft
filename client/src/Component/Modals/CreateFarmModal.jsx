@@ -2,7 +2,7 @@ import { Input, Modal } from "antd";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const CreateFarmModal = ({ isModalVisible, handleOk, handleCancel, setAlertMessage, setIsAlertVisible }) => {
+const CreateFarmModal = ({ isModalVisible, handleOk, handleCancel, setAlertMessage }) => {
     const [farmName, setFarmName] = useState('');
 
     useEffect(() => {
@@ -24,11 +24,14 @@ const CreateFarmModal = ({ isModalVisible, handleOk, handleCancel, setAlertMessa
                 const { farmerId, associationId } = farmerResponse.data;
 
                 if (farmerResponse.status === 200) {
-                    const response = await axios.post('http://localhost:8080/api/farmer/createFarm', {
+                    const requestData = {
                         farmerId: farmerId,
                         associationId: associationId,
                         farmName: farmName,
-                    }, {
+                    };
+                    console.log('Request Data:', requestData);  // Log the request data
+
+                    const response = await axios.post('http://localhost:8080/api/farmer/createFarm', requestData, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
 
@@ -69,7 +72,6 @@ const CreateFarmModal = ({ isModalVisible, handleOk, handleCancel, setAlertMessa
             });
         }
 
-        setIsAlertVisible(true);
         handleOk(); // Close the modal after creating the farm
     };
 
