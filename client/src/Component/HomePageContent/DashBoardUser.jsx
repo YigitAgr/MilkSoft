@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Row, Col, Card, Table } from 'antd';
 import MonthlyMilk from "../Graphs/MonthlyMilk.jsx";
+import FarmMonthMilk from "../Farms/FarmMonthMilk.jsx";
 import axios from "axios";
 
 const { Content } = Layout;
@@ -81,7 +82,7 @@ const HomePageContentAdmin = () => {
                 </Col>
                 <Col span={6}>
                     <Card title="Monthly Milk Production" bordered={false}>
-                        100
+                        <FarmMonthMilk/>
                     </Card>
                 </Col>
                 <Col span={6}>
