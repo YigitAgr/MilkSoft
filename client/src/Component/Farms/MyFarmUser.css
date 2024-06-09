@@ -1,0 +1,19 @@
+.scrollable-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.scrollable-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* Set the scrollbar thumb color to white */
+.scrollable-list::-webkit-scrollbar-thumb {
+    background-color: #ffffff; /* White color for the scrollbar thumb */
+    border-radius: 10px;
+}
+
+/* Set the scrollbar track color to white */
+.scrollable-list::-webkit-scrollbar-track {
+    background-color: #ffffff; /* White color for the scrollbar track */
+}

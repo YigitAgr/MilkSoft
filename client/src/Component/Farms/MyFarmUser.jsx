@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Button, Card, Layout, notification } from "antd";
+import { Button, Card, Layout, notification, Descriptions, Statistic, Divider, Row, Col, List } from "antd";
 import axios from 'axios';
 import CreateFarmModal from "../Modals/CreateFarmModal.jsx";
+import './MyFarmUser.css';
+
 
 const { Content } = Layout;
 
@@ -74,10 +76,32 @@ const MyFarmUser = () => {
                 )}
                 {farm && (
                     <div>
-                        <p>ID: {farm.id}</p>
-                        <p>Name: {farm.name}</p>
-                        <p>Total Cows: {farm.totalCows}</p>
-                        <p>Daily Milk Production: {farm.dailyMilkProduction}</p>
+                        <Descriptions title="Farm Information" bordered>
+                            <Descriptions.Item label="Name">{farm.name}</Descriptions.Item>
+                        </Descriptions>
+                        <Divider />
+                        <Row gutter={16}>
+                            <Col span={24}>
+                                <Statistic title="Total Cows" value={farm.totalCows} />
+                            </Col>
+                        </Row>
+                        <Divider />
+                        <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
+                            <List
+                                className="scrollable-list"
+                                header={<div>Milk Production</div>}
+                                bordered
+                                dataSource={farm.monthlyMilkProductions}
+                                renderItem={item => (
+                                    <List.Item>
+                                        <List.Item.Meta
+                                            title={new Date(item.month).toLocaleString('default', { month: 'long', year: 'numeric' })}
+                                            description={`Total Milk Produced: ${item.totalMilkProduced} liters`}
+                                        />
+                                    </List.Item>
+                                )}
+                            />
+                        </div>
                     </div>
                 )}
             </Card>
