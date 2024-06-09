@@ -84,30 +84,27 @@ const HomePageContentAdmin = () => {
             }}
         >
             <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
-                <Col span={6}>
+                <Col span={8}>
                     <Card title="Cow count" bordered={false} style={cardStyle}>
                         {cowCount !== null ? cowCount : '0'}
                     </Card>
                 </Col>
-                <Col span={6}>
+                <Col span={8}>
                     <Card title="Monthly Milk Production" bordered={false} style={cardStyle}>
                         <FarmMonthMilk />
                     </Card>
                 </Col>
-                <Col span={6}>
-                    <Card title="Active Customers" bordered={false} style={cardStyle}>
-                        33%
-                    </Card>
-                </Col>
-                <Col span={6}>
+                <Col span={8}>
                     <Card title="Date" bordered={false} style={cardStyle}>
                         <DateComponent />
                     </Card>
                 </Col>
             </Row>
+
+
             <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
                 <Col span={16}>
-                    <Card title="Trend" bordered={false} style={{ height: '100%' }}>
+                    <Card title="Annual Milk Production by Month" bordered={false} style={{ height: '100%' }}>
                         <MonthlyMilk />
                     </Card>
                 </Col>

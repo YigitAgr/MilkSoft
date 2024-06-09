@@ -81,27 +81,23 @@ const DashBoardAdmin = () => {
             }}
         >
             <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
-                <Col span={6}>
+                <Col span={8}> {/* Each Col spans 8/24 or 1/3 of the row */}
                     <Card title="Number Of Registered Farmers" bordered={false} style={cardStyle}>
                         {currentFarmers} {/* Display current farmers count */}
                     </Card>
                 </Col>
-                <Col span={6}>
+                <Col span={8}> {/* Each Col spans 8/24 or 1/3 of the row */}
                     <Card title="Milk Collected This Month" bordered={false} style={cardStyle}>
                         {milkCollectedThisMonth} Lt {/* Display milk collected this month */}
                     </Card>
                 </Col>
-                <Col span={6}>
-                    <Card title="Active Customers" bordered={false} style={cardStyle}>
-                        33%
-                    </Card>
-                </Col>
-                <Col span={6}>
+                <Col span={8}> {/* Each Col spans 8/24 or 1/3 of the row */}
                     <Card title="Date" bordered={false} style={cardStyle}>
                         <Datecomponent/>
                     </Card>
                 </Col>
             </Row>
+
             <Row className="equal-height" gutter={[16, 16]} style={{ marginBottom: 16 }}>
                 <Col span={16}>
                     <Card title="Annual Milk Production by Month" bordered={false}>
