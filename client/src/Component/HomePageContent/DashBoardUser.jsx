@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Layout, Row, Col, Card, Table } from 'antd';
 import MonthlyMilk from "../Graphs/MonthlyMilk.jsx";
 import FarmMonthMilk from "../Farms/FarmMonthMilk.jsx";
+import DateComponent from "../Date/Datecomponent.jsx";
 import axios from "axios";
 
 const { Content } = Layout;
@@ -64,6 +65,14 @@ const HomePageContentAdmin = () => {
         }
     ];
 
+    const cardStyle = {
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        textAlign: 'center'
+    };
+
     return (
         <Content
             style={{
@@ -76,35 +85,35 @@ const HomePageContentAdmin = () => {
         >
             <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
                 <Col span={6}>
-                    <Card title="Cow count" bordered={false}>
+                    <Card title="Cow count" bordered={false} style={cardStyle}>
                         {cowCount !== null ? cowCount : '0'}
                     </Card>
                 </Col>
                 <Col span={6}>
-                    <Card title="Monthly Milk Production" bordered={false}>
-                        <FarmMonthMilk/>
+                    <Card title="Monthly Milk Production" bordered={false} style={cardStyle}>
+                        <FarmMonthMilk />
                     </Card>
                 </Col>
                 <Col span={6}>
-                    <Card title="Active Customers" bordered={false}>
+                    <Card title="Active Customers" bordered={false} style={cardStyle}>
                         33%
                     </Card>
                 </Col>
                 <Col span={6}>
-                    <Card title="Churn Rate" bordered={false}>
-                        2%
+                    <Card title="Date" bordered={false} style={cardStyle}>
+                        <DateComponent />
                     </Card>
                 </Col>
             </Row>
             <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
                 <Col span={16}>
-                    <Card title="Trend" bordered={false}>
-                        <MonthlyMilk/>
+                    <Card title="Trend" bordered={false} style={{ height: '100%' }}>
+                        <MonthlyMilk />
                     </Card>
                 </Col>
                 <Col span={8}>
-                    <Card title="Cow In Calf" bordered={false}>
-                        <div style={{height: '25vw'}}>
+                    <Card title="Cow In Calf" bordered={false} style={{ height: '100%' }}>
+                        <div style={{ height: '25vw' }}>
                             <Table dataSource={cowsInCalf} columns={columns} pagination={false} />
                         </div>
                     </Card>
