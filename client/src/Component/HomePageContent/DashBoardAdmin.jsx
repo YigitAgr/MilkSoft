@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Layout, Row, Col, Card, Table } from 'antd';
 import axios from 'axios';
 import YearlyMilkProduction from "../Graphs/YearlyMilkProduction.jsx";
+import Datecomponent from "../Date/Datecomponent.jsx";
 
 const { Content } = Layout;
 
@@ -92,8 +93,8 @@ const DashBoardAdmin = () => {
                     </Card>
                 </Col>
                 <Col span={6}>
-                    <Card title="Churn Rate" bordered={false}>
-                        2%
+                    <Card title="Date" bordered={false}>
+                        <Datecomponent/>
                     </Card>
                 </Col>
             </Row>
