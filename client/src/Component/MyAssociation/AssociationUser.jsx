@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Card, Layout, Button, Spin, Row, Col, Typography } from "antd";
+import { Card, Layout, Button, Spin, Typography } from "antd";
 import AssociationFindModal from "../Modals/AssociationFindModal.jsx";
 import axios from 'axios';
 
@@ -11,42 +11,50 @@ const AssociationUser = () => {
     const [association, setAssociation] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [farmerId, setFarmerId] = useState(null);
+    const [reportData, setReportData] = useState(null);
+    const [token, setToken] = useState(null);
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (token && token.split('.').length === 3) {
-            try {
-                const decodedToken = JSON.parse(atob(token.split('.')[1]));
-                const userId = decodedToken.userId;
+        const fetchData = async () => {
+            const localToken = localStorage.getItem("token");
+            if (localToken && localToken.split('.').length === 3) {
+                try {
+                    const decodedToken = JSON.parse(atob(localToken.split('.')[1]));
+                    const userId = decodedToken.userId;
+                    setToken(localToken);
 
-                axios.get(`http://localhost:8080/api/farmer/${userId}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                })
-                    .then(idsResponse => {
-                        const farmerId = idsResponse.data.farmerId;
-                        setFarmerId(farmerId);
-
-                        axios.get(`http://localhost:8080/api/farmer/associations/farmer/${farmerId}`)
-                            .then(associationResponse => {
-                                setAssociation(associationResponse.data);
-                                setIsLoading(false);
-                            })
-                            .catch(error => {
-                                console.error('There was an error!', error);
-                                setIsLoading(false);
-                            });
-                    })
-                    .catch(error => {
-                        console.error('There was an error!', error);
-                        setIsLoading(false);
+                    const farmerResponse = await axios.get(`http://localhost:8080/api/farmer/${userId}`, {
+                        headers: { Authorization: `Bearer ${localToken}` }
                     });
-            } catch (e) {
-                console.error('Invalid JWT token', e);
+                    const farmerId = farmerResponse.data.farmerId;
+                    setFarmerId(farmerId);
+
+                    const associationResponse = await axios.get(`http://localhost:8080/api/farmer/associations/farmer/${farmerId}`, {
+                        headers: { Authorization: `Bearer ${localToken}` }
+                    });
+                    setAssociation(associationResponse.data);
+
+                    const reportResponse = await axios.get(`http://localhost:8080/api/reports/runpython`, {
+                        headers: { Authorization: `Bearer ${localToken}` }
+                    });
+                    const reportText = reportResponse.data;
+                    // Extracting the specific section from the report data
+                    const startIndex = reportText.indexOf('In Bursa');
+                    const endIndex = reportText.indexOf('Breed produces the most milk');
+                    const desiredSection = reportText.slice(startIndex, endIndex);
+                    setReportData(desiredSection);
+
+                    setIsLoading(false);
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                    setIsLoading(false);
+                }
+            } else {
                 setIsLoading(false);
             }
-        } else {
-            setIsLoading(false);
-        }
+        };
+
+        fetchData();
     }, []);
 
     const showModal = () => {
@@ -79,23 +87,9 @@ const AssociationUser = () => {
             ) : (
                 <Card style={{ width: '100%', height: '38vw', position: 'relative' }}>
                     {association ? (
-                        <div>
+                        <div style={{ marginBottom: '20px' }}>
                             <Title level={3}>{association.name}</Title>
-                            <Text type="secondary">{association.city}</Text>
-                            <Row gutter={[16, 16]} style={{ marginTop: '20px' }}>
-                                <Col span={12}>
-                                    <Card title="Association Details" size="small">
-                                        <Text>{association.details}</Text>
-                                    </Card>
-                                </Col>
-                                <Col span={12}>
-                                    <Card title="Contact Information" size="small">
-                                        <Text>Email: {association.email}</Text>
-                                        <br />
-                                        <Text>Phone: {association.phone}</Text>
-                                    </Card>
-                                </Col>
-                            </Row>
+                            <Text type="secondary" style={{ fontSize: '18px' }}>{association.city}</Text>
                         </div>
                     ) : (
                         <div style={{ textAlign: 'center', fontSize: '20px' }}>
@@ -111,6 +105,22 @@ const AssociationUser = () => {
                             Find Association
                         </Button>
                     )}
+                    {reportData && (
+                        <Card title="Report" size="small">
+                            <ul>
+                                {reportData.split(/(?<=\.\s)/).map((segment, index) => (
+                                    <li key={index}>
+                                        {segment.trim()}
+                                    </li>
+                                ))}
+                            </ul>
+                        </Card>
+                    )}
+
+
+
+
+
                     <AssociationFindModal
                         isModalVisible={isModalVisible}
                         handleOk={handleOk}
