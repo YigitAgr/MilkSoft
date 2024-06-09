@@ -26,4 +26,5 @@ public class TemperatureRecord {
     @ManyToOne
     @JoinColumn(name = "association_id")
     private Association association;
+
 }

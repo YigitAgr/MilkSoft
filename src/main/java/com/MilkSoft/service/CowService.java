@@ -19,11 +19,13 @@ public class CowService {
 
     private final CowRepository cowRepository;
     private final FarmRepository farmRepository;
+    private final FarmService farmService;
 
     @Autowired
-    public CowService(FarmRepository farmRepository, CowRepository cowRepository) {
+    public CowService(FarmRepository farmRepository, CowRepository cowRepository, FarmService farmService) {
         this.farmRepository = farmRepository;
         this.cowRepository = cowRepository;
+        this.farmService = farmService;
     }
 
     public Cow createCow(CowDTO cowDTO) {
@@ -68,6 +70,9 @@ public class CowService {
         farm.getCows().add(cow);
 
         farmRepository.save(farm);
+        farmService.updateFarmBreed(farm.getId());
+
+
         return cow;
     }
 
