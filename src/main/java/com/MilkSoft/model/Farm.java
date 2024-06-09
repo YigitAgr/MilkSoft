@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Random;
 
 @Data
 @Getter
@@ -56,6 +57,12 @@ public class Farm {
     public void removeMonthlyMilkProduction(MonthlyMilkProduction monthlyMilkProduction) {
         monthlyMilkProductions.remove(monthlyMilkProduction);
         monthlyMilkProduction.setFarm(null);
+    }
+
+    public Farm() {
+        // Generate a random daily milk production value between 25 and 35
+        Random random = new Random();
+        this.dailyMilkProduction = random.nextInt(11) + 25;
     }
 
 }

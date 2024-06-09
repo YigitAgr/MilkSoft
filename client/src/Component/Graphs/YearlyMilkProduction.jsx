@@ -42,6 +42,7 @@ const YearlyMilkProduction = () => {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 const data = productionResponse.data;
+                console.log(data);
 
                 // Process data to combine production values by month
                 const monthlyProduction = {};

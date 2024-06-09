@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,6 +56,8 @@ public class MonthlyReportService {
         Map<String, List<Temperature>> temperaturesByMonth = temperatures.stream()
                 .collect(Collectors.groupingBy(Temperature::getMonth));
 
+        Random random = new Random();
+
         // Iterate over each month
         for (Map.Entry<String, List<Temperature>> entry : temperaturesByMonth.entrySet()) {
             String month = entry.getKey();
@@ -62,10 +65,13 @@ public class MonthlyReportService {
             float avgTemperature = calculateAverageTemperature(temperaturesForMonth);
             float avgWet = calculateAverageWet(temperaturesForMonth);
 
+            // Generate a random daily milk production between 25 and 35
+            int randomDailyMilkProduction = random.nextInt(11) + 25;
+
             // Create a MonthlyReport object for each month
             MonthlyReport report = new MonthlyReport();
             report.setBreed(farm.getBreed());
-            report.setDailyMilkProduction(farm.getDailyMilkProduction());
+            report.setDailyMilkProduction(randomDailyMilkProduction);
             report.setCity(farm.getAssociation().getCity());
             report.setMonth(month);
             report.setAverageTemperature(avgTemperature);

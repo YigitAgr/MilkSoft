@@ -19,6 +19,7 @@ public class MonthlyMilkProduction {
 
     private int totalMilkProduced;
 
+
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "farm_id")
