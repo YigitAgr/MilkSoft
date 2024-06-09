@@ -7,6 +7,8 @@ import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import org.springframework.stereotype.Service;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -15,30 +17,26 @@ import java.util.List;
 @Service
 public class CSVCreator {
 
-    public void createCSV(List<MonthlyReport> reports, String fileName) {
-        try {
-            Writer writer = Files.newBufferedWriter(Paths.get(fileName));
-
-            // Write the column names to the CSV file
+    public void createCSV(List<MonthlyReport> reports, String filePath) {
+        try (CSVWriter csvWriter = new CSVWriter(new FileWriter(filePath))) {
             String[] columnNames = {"Breed", "City", "Month", "AverageTemperature", "AverageWet", "DailyMilkProduction"};
-            CSVWriter csvWriter = new CSVWriter(writer, ';', CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);  // Use semicolon as the separator
             csvWriter.writeNext(columnNames);
 
-            // Write the data to the CSV file
-            StatefulBeanToCsv<MonthlyReport> beanToCsv = new StatefulBeanToCsvBuilder<MonthlyReport>(writer)
-                    .withSeparator(';')  // Use semicolon as the separator
-                    .withQuotechar('"')
-                    .withEscapechar('\\')
-                    .withLineEnd("\n")
-                    .withOrderedResults(false)
-                    .withApplyQuotesToAll(false)
-                    .withMappingStrategy(new ColumnPositionMappingStrategy<>())
-                    .build();
-            beanToCsv.write(reports);
+            for (MonthlyReport report : reports) {
+                String[] rowData = {
+                        report.getBreed(),
+                        report.getCity(),
+                        report.getMonth(),
+                        String.valueOf(report.getAverageTemperature()),
+                        String.valueOf(report.getAverageWet()),
+                        String.valueOf(report.getDailyMilkProduction())
+                };
+                csvWriter.writeNext(rowData);
+            }
 
-            writer.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("CSV file created successfully at: " + filePath);
+        } catch (IOException e) {
+            System.err.println("Error occurred while creating CSV file: " + e.getMessage());
         }
     }
 }

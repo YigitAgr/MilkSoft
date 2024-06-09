@@ -10,51 +10,83 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 public class MonthlyReportService {
 
-    @Autowired
-    private FarmRepository farmRepository;
+    private final FarmRepository farmRepository;
+    private final CSVCreator csvCreator;
+    private final String DATA_FOLDER_PATH = "src/main/java/com/MilkSoft/dataread/";
 
     @Autowired
-    private CSVCreator csvCreator;
+    public MonthlyReportService(FarmRepository farmRepository, CSVCreator csvCreator) {
+        this.farmRepository = farmRepository;
+        this.csvCreator = csvCreator;
+    }
 
     public void generateCSV(String fileName) {
         List<Farm> farms = farmRepository.findAll();
-        List<MonthlyReport> reports = new ArrayList<>();
+        List<MonthlyReport> allReports = new ArrayList<>(); // Collect all reports from farms
 
         for (Farm farm : farms) {
-            // Populate the MonthlyReport object with data from Farm and Association
+            List<MonthlyReport> reports = createMonthlyReport(farm); // Generate reports for each farm
+            allReports.addAll(reports); // Add reports to the list of all reports
+        }
+
+        String filePath = DATA_FOLDER_PATH + fileName;
+        System.out.println("Number of reports: " + allReports.size());
+        csvCreator.createCSV(allReports, filePath); // Pass all reports to CSVCreator
+    }
+
+
+    private List<MonthlyReport> createMonthlyReport(Farm farm) {
+        List<MonthlyReport> reports = new ArrayList<>();
+        List<TemperatureRecord> temperatureRecords = farm.getAssociation().getTemperatureRecords();
+        List<Temperature> temperatures = new ArrayList<>();
+
+        // Gather all temperatures from all temperature records
+        for (TemperatureRecord record : temperatureRecords) {
+            temperatures.addAll(record.getTemperatures());
+        }
+
+        // Group temperatures by month
+        Map<String, List<Temperature>> temperaturesByMonth = temperatures.stream()
+                .collect(Collectors.groupingBy(Temperature::getMonth));
+
+        // Iterate over each month
+        for (Map.Entry<String, List<Temperature>> entry : temperaturesByMonth.entrySet()) {
+            String month = entry.getKey();
+            List<Temperature> temperaturesForMonth = entry.getValue();
+            float avgTemperature = calculateAverageTemperature(temperaturesForMonth);
+            float avgWet = calculateAverageWet(temperaturesForMonth);
+
+            // Create a MonthlyReport object for each month
             MonthlyReport report = new MonthlyReport();
             report.setBreed(farm.getBreed());
             report.setDailyMilkProduction(farm.getDailyMilkProduction());
             report.setCity(farm.getAssociation().getCity());
-
-            // Get temperature records from Association
-            List<TemperatureRecord> temperatureRecords = farm.getAssociation().getTemperatureRecords();
-
-            // Calculate min, max, and average temperature
-            List<Float> temperatures = new ArrayList<>();
-            for (TemperatureRecord temperatureRecord : temperatureRecords) {
-                for (Temperature temperature : temperatureRecord.getTemperatures()) {
-                    temperatures.add(temperature.getTemperature());
-                }
-            }
-            float minTemperature = temperatures.stream().min(Float::compare).orElse(Float.NaN);
-            float maxTemperature = temperatures.stream().max(Float::compare).orElse(Float.NaN);
-            float avgTemperature = (float) temperatures.stream().mapToDouble(val -> val).average().orElse(Double.NaN);
-
-            report.setMinTemperature(minTemperature);
-            report.setMaxTemperature(maxTemperature);
-            report.setAvgTemperature(avgTemperature);
+            report.setMonth(month);
+            report.setAverageTemperature(avgTemperature);
+            report.setAverageWet(avgWet);
 
             reports.add(report);
         }
-        // Specify the path to the dataread folder
-        String filePath = "src/main/java/com/MilkSoft/dataread/" + fileName;
-        System.out.println("Number of reports: " + reports.size());
-        csvCreator.createCSV(reports, filePath);
+
+        return reports;
+    }
+
+
+    private float calculateAverageTemperature(List<Temperature> temperatures) {
+        int count = temperatures.size();
+        float sumTemperature = temperatures.stream().map(Temperature::getTemperature).reduce(0.0f, Float::sum);
+        return count > 0 ? sumTemperature / count : 0.0f;
+    }
+
+    private float calculateAverageWet(List<Temperature> temperatures) {
+        int count = temperatures.size();
+        float sumWet = temperatures.stream().map(Temperature::getAverageWet).reduce(0.0f, Float::sum);
+        return count > 0 ? sumWet / count : 0.0f;
     }
 }
