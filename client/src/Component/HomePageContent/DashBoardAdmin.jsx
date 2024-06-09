@@ -66,6 +66,10 @@ const DashBoardAdmin = () => {
         },
     ];
 
+    const cardStyle = {
+        height: '100%', // Set a fixed height for all cards in the row
+    };
+
     return (
         <Content
             style={{
@@ -78,22 +82,22 @@ const DashBoardAdmin = () => {
         >
             <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
                 <Col span={6}>
-                    <Card title="Number Of Registered Farmers" bordered={false}>
+                    <Card title="Number Of Registered Farmers" bordered={false} style={cardStyle}>
                         {currentFarmers} {/* Display current farmers count */}
                     </Card>
                 </Col>
                 <Col span={6}>
-                    <Card title="Milk Collected This Month" bordered={false}>
+                    <Card title="Milk Collected This Month" bordered={false} style={cardStyle}>
                         {milkCollectedThisMonth} Lt {/* Display milk collected this month */}
                     </Card>
                 </Col>
                 <Col span={6}>
-                    <Card title="Active Customers" bordered={false}>
+                    <Card title="Active Customers" bordered={false} style={cardStyle}>
                         33%
                     </Card>
                 </Col>
                 <Col span={6}>
-                    <Card title="Date" bordered={false}>
+                    <Card title="Date" bordered={false} style={cardStyle}>
                         <Datecomponent/>
                     </Card>
                 </Col>

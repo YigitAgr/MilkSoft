@@ -7,21 +7,16 @@ const MainPage = () => {
     return (
         <div className="main-page">
             <Row justify="center">
-                <Col className="deneme" style={{marginTop:"10%"}} span={8} >
-                    <h1>Welcome to Our Farm</h1>
+                <Col className="deneme" style={{marginTop: "10%"}} span={8}>
+                    <h1>Welcome to Our Application</h1>
                     <p>We are a farm dedicated to providing high-quality, sustainable produce.</p>
-
-                    <h2>Our Associations</h2>
-                    <p>We are proud members of the following farm-related associations:</p>
-                    <ul>
-                        <li>Association 1</li>
-                        <li>Association 2</li>
-                        <li>Association 3</li>
-                        // Add more associations as needed
-                    </ul>
-                    <Space size={[30,0]}>
-                        <ButtonLoading buttonText="Log In"  />
-                        <ButtonLoading buttonText="Sign Up" />
+                    <p>We're passionate about agriculture and dedicated to providing high-quality,
+                        sustainable produce. Our mission is to leverage technology and innovation to enhance the
+                        efficiency and productivity of cow farms, ultimately contributing to a more sustainable and
+                        prosperous agricultural industry.</p>
+                    <Space size={[30, 0]}>
+                        <ButtonLoading buttonText="Log In"/>
+                        <ButtonLoading buttonText="Sign Up"/>
                     </Space>
                 </Col>
             </Row>
