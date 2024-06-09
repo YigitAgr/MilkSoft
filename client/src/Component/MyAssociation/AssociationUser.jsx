@@ -1,16 +1,16 @@
-// AssociationUser.jsx
 import React, { useState, useEffect } from "react";
-import { Card, Layout, Button, Spin } from "antd";
+import { Card, Layout, Button, Spin, Row, Col, Typography } from "antd";
 import AssociationFindModal from "../Modals/AssociationFindModal.jsx";
 import axios from 'axios';
 
 const { Content } = Layout;
+const { Title, Text } = Typography;
 
 const AssociationUser = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [association, setAssociation] = useState(null);
-    const [isLoading, setIsLoading] = useState(true); // Set initial loading state to true
-    const [farmerId, setFarmerId] = useState(null); // State to store farmerId
+    const [isLoading, setIsLoading] = useState(true);
+    const [farmerId, setFarmerId] = useState(null);
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -19,36 +19,33 @@ const AssociationUser = () => {
                 const decodedToken = JSON.parse(atob(token.split('.')[1]));
                 const userId = decodedToken.userId;
 
-                // First request to get the farmerId
                 axios.get(`http://localhost:8080/api/farmer/${userId}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 })
                     .then(idsResponse => {
                         const farmerId = idsResponse.data.farmerId;
-                        console.log("farmer id", farmerId);
-                        setFarmerId(farmerId); // Set the farmerId in state
+                        setFarmerId(farmerId);
 
-                        // Second request to get the association using the farmerId
                         axios.get(`http://localhost:8080/api/farmer/associations/farmer/${farmerId}`)
                             .then(associationResponse => {
                                 setAssociation(associationResponse.data);
-                                setIsLoading(false); // Set loading to false when the request is complete
+                                setIsLoading(false);
                             })
                             .catch(error => {
                                 console.error('There was an error!', error);
-                                setIsLoading(false); // Set loading to false when an error occurs
+                                setIsLoading(false);
                             });
                     })
                     .catch(error => {
                         console.error('There was an error!', error);
-                        setIsLoading(false); // Set loading to false when an error occurs
+                        setIsLoading(false);
                     });
             } catch (e) {
                 console.error('Invalid JWT token', e);
-                setIsLoading(false); // Set loading to false if token parsing fails
+                setIsLoading(false);
             }
         } else {
-            setIsLoading(false); // Set loading to false if no valid token is found
+            setIsLoading(false);
         }
     }, []);
 
@@ -78,28 +75,34 @@ const AssociationUser = () => {
             }}
         >
             {isLoading ? (
-                <Spin size="large" /> // Render a loading spinner when isLoading is true
+                <Spin size="large" />
             ) : (
                 <Card style={{ width: '100%', height: '38vw', position: 'relative' }}>
                     {association ? (
-                        <>
-                            <h2>{association.name}</h2>
-                            <p>{association.city}</p>
-                            {/* Display other association details here */}
-                            <p>You are registered in an association.</p>
-                        </>
+                        <div>
+                            <Title level={3}>{association.name}</Title>
+                            <Text type="secondary">{association.city}</Text>
+                            <Row gutter={[16, 16]} style={{ marginTop: '20px' }}>
+                                <Col span={12}>
+                                    <Card title="Association Details" size="small">
+                                        <Text>{association.details}</Text>
+                                    </Card>
+                                </Col>
+                                <Col span={12}>
+                                    <Card title="Contact Information" size="small">
+                                        <Text>Email: {association.email}</Text>
+                                        <br />
+                                        <Text>Phone: {association.phone}</Text>
+                                    </Card>
+                                </Col>
+                            </Row>
+                        </div>
                     ) : (
-                        <div style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            height: '100%', // Make sure the message is vertically centered
-                            fontSize: '20px',
-                        }}>
+                        <div style={{ textAlign: 'center', fontSize: '20px' }}>
                             <p>You are not registered in any associations.</p>
                         </div>
                     )}
-                    {!association && ( // Render the button only if association is null
+                    {!association && (
                         <Button
                             type="primary"
                             onClick={showModal}
@@ -108,7 +111,6 @@ const AssociationUser = () => {
                             Find Association
                         </Button>
                     )}
-                    {/* Pass farmerId as a prop to AssociationFindModal */}
                     <AssociationFindModal
                         isModalVisible={isModalVisible}
                         handleOk={handleOk}
