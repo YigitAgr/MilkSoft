@@ -3,6 +3,7 @@ import { Layout, Row, Col, Card, Table } from 'antd';
 import axios from 'axios';
 import YearlyMilkProduction from "../Graphs/YearlyMilkProduction.jsx";
 import Datecomponent from "../Date/Datecomponent.jsx";
+import PendingRequests from "../BreadcrumbItems/Adminbreadcrumb/PendingRequests.jsx";
 
 const { Content } = Layout;
 
@@ -107,11 +108,11 @@ const DashBoardAdmin = () => {
                     </Card>
                 </Col>
                 <Col span={8}>
-                    <Card title="Pending Membership Request" bordered={false} className="big-card">
+
                         <div style={{ height: '25vw' }}> {/* Adjust this value as needed */}
-                            <Table columns={columns} dataSource={pendingRequests} pagination={false} />
+                            <PendingRequests showActions={false} />
                         </div>
-                    </Card>
+
                 </Col>
             </Row>
         </Content>

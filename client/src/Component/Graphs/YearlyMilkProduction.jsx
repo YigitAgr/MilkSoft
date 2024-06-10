@@ -87,7 +87,7 @@ const YearlyMilkProduction = () => {
 
     useEffect(() => {
         let chart;
-        if (chartRef.current && chartData) {
+        if (chartRef.current && chartData && chartData.labels.some(label => chartData.datasets[0].data[monthNames.indexOf(label)] !== 0)) {
             chart = new Chart(chartRef.current, {
                 type: 'bar',
                 data: chartData,
@@ -107,12 +107,12 @@ const YearlyMilkProduction = () => {
     }, [chartData]);
 
     return (
-        <div>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
             {loading ? (
                 <p>Loading...</p>
             ) : error ? (
                 <p>{error}</p>
-            ) : chartData && chartData.labels.length > 0 ? (
+            ) : chartData && chartData.labels.some(label => chartData.datasets[0].data[monthNames.indexOf(label)] !== 0) ? (
                 <canvas ref={chartRef} />
             ) : (
                 <Empty description="No data available" />

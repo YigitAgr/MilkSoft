@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Input, Table, Button } from "antd";
+import { Modal, Input, Table, Button, notification } from "antd";
+
 import './AssociationFindModal.css';
 import axios from 'axios';
 
@@ -45,7 +46,7 @@ const AssociationFindModal = ({ isModalVisible, handleOk, handleCancel, farmerId
         const token = localStorage.getItem("token");
         const associationId = record.id;
 
-        console.log("associationId, farmerId, token", associationId, farmerId, token);
+        console.log("associationId, farmerId, token", associationId, token);
 
         axios.post(`http://localhost:8080/api/v1/membership/sendRequest?farmerId=${farmerId}&associationId=${associationId}`, null, {
             headers: {
@@ -54,15 +55,43 @@ const AssociationFindModal = ({ isModalVisible, handleOk, handleCancel, farmerId
         })
             .then(response => {
                 console.log(response);
+                notification.success({
+                    message: 'Success',
+                    description: 'Participation request sent successfully!',
+                });
             })
             .catch(error => {
-                if (error.response && error.response.status === 403) {
-                    console.error('Authorization error! Check your token.');
+                if (error.response) {
+                    if (error.response.status === 400) {
+                        const errorMessage = error.response.data;
+                        if (errorMessage.includes('A request from this user to this association already exists.')) {
+                            notification.error({
+                                message: 'Error',
+                                description: 'A request from this user to this association already exists.',
+                            });
+                        } else {
+                            notification.error({
+                                message: 'Error',
+                                description: `Error: ${errorMessage}`,
+                            });
+                        }
+                    } else if (error.response.status === 403) {
+                        notification.error({
+                            message: 'Authorization Error',
+                            description: 'Authorization error! Check your token.',
+                        });
+                    } else {
+                        notification.error({
+                            message: 'Error',
+                            description: 'An error occurred while sending the request.',
+                        });
+                    }
                 } else {
                     console.error('There was an error!', error);
                 }
             });
     };
+
 
     const filteredData = data.filter(item => item.name.toLowerCase().includes(search.toLowerCase()));
 
