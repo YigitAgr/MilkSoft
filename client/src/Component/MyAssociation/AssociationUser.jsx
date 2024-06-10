@@ -39,10 +39,12 @@ const AssociationUser = () => {
                     });
                     const reportText = reportResponse.data;
                     // Extracting the specific section from the report data
-                    const startIndex = reportText.indexOf('In Bursa');
+                    const startIndex = reportText.indexOf('In ');
                     const endIndex = reportText.indexOf('Breed produces the most milk');
                     const desiredSection = reportText.slice(startIndex, endIndex);
                     setReportData(desiredSection);
+
+                    console.log("reportdata",reportData);
 
                     setIsLoading(false);
                 } catch (error) {
@@ -56,6 +58,11 @@ const AssociationUser = () => {
 
         fetchData();
     }, []);
+
+
+    useEffect(() => {
+        console.log("reportData updated:", reportData);
+    }, [reportData]);
 
     const showModal = () => {
         setIsModalVisible(true);
@@ -116,6 +123,7 @@ const AssociationUser = () => {
                             </ul>
                         </Card>
                     )}
+
 
 
 

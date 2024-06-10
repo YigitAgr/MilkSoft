@@ -7,7 +7,9 @@ import PendingRequests from "../BreadcrumbItems/Adminbreadcrumb/PendingRequests.
 
 const { Content } = Layout;
 
+
 const DashBoardAdmin = () => {
+    const [associationId, setAssociationId] = useState(null);
     const [pendingRequests, setPendingRequests] = useState([]);
     const [currentFarmers, setCurrentFarmers] = useState(0);
     const [milkCollectedThisMonth, setMilkCollectedThisMonth] = useState(0);
@@ -19,33 +21,44 @@ const DashBoardAdmin = () => {
                 const decodedToken = JSON.parse(token);
                 const userId = decodedToken.userId;
 
-                // Fetch pending requests
-                axios.get(`http://localhost:8080/api/association/pendingRequests/${userId}`)
+                // Fetch the associationId first
+                axios.get(`http://localhost:8080/api/association/getAssociationId/${userId}`)
                     .then(response => {
-                        setPendingRequests(response.data);
-                    })
-                    .catch(error => {
-                        console.error('There was an error fetching pending requests!', error);
-                    });
+                        const associationId = response.data;
+                        setAssociationId(associationId);
 
-                // Fetch current farmers
-                axios.get(`http://localhost:8080/api/association/userCount/${userId}`)
-                    .then(response => {
-                        setCurrentFarmers(response.data);
-                    })
-                    .catch(error => {
-                        console.error('There was an error fetching current farmers count!', error);
-                    });
+                        // Fetch pending requests
+                        axios.get(`http://localhost:8080/api/association/pendingRequests/${associationId}`)
+                            .then(response => {
+                                setPendingRequests(response.data);
+                            })
+                            .catch(error => {
+                                console.error('There was an error fetching pending requests!', error);
+                            });
 
-                // Fetch milk collected this month
-                axios.get(`http://localhost:8080/api/association/farmsMonthlyProduction/${userId}`)
-                    .then(response => {
-                        const farms = response.data;
-                        const totalMilkCollected = farms.reduce((sum, farm) => sum + farm.currentMonthTotal, 0);
-                        setMilkCollectedThisMonth(totalMilkCollected);
+                        // Fetch current farmers
+                        axios.get(`http://localhost:8080/api/association/userCount/${associationId}`)
+                            .then(response => {
+                                setCurrentFarmers(response.data);
+                            })
+                            .catch(error => {
+                                console.error('There was an error fetching current farmers count!', error);
+                            });
+
+                        // Fetch milk collected this month
+                        axios.get(`http://localhost:8080/api/association/farmsMonthlyProduction/${associationId}`)
+                            .then(response => {
+                                const farms = response.data;
+                                const totalMilkCollected = farms.reduce((sum, farm) => sum + farm.currentMonthTotal, 0);
+                                setMilkCollectedThisMonth(totalMilkCollected);
+                            })
+                            .catch(error => {
+                                console.error('There was an error fetching milk collected this month!', error);
+                            });
+
                     })
                     .catch(error => {
-                        console.error('There was an error fetching milk collected this month!', error);
+                        console.error('There was an error fetching association ID!', error);
                     });
 
             } catch (e) {
@@ -53,19 +66,6 @@ const DashBoardAdmin = () => {
             }
         }
     }, []);
-
-    const columns = [
-        {
-            title: 'Farmer Name',
-            dataIndex: 'farmerName',
-            key: 'farmerName',
-        },
-        {
-            title: 'Status',
-            dataIndex: 'status',
-            key: 'status',
-        },
-    ];
 
     const cardStyle = {
         height: '100%', // Set a fixed height for all cards in the row
@@ -94,7 +94,7 @@ const DashBoardAdmin = () => {
                 </Col>
                 <Col span={8}> {/* Each Col spans 8/24 or 1/3 of the row */}
                     <Card title="Date" bordered={false} style={cardStyle}>
-                        <Datecomponent/>
+                        <Datecomponent />
                     </Card>
                 </Col>
             </Row>
@@ -108,11 +108,7 @@ const DashBoardAdmin = () => {
                     </Card>
                 </Col>
                 <Col span={8}>
-
-                        <div style={{ height: '25vw' }}> {/* Adjust this value as needed */}
-                            <PendingRequests showActions={false} />
-                        </div>
-
+                    <PendingRequests showActions={false} /> {/* Pass the prop to hide action buttons */}
                 </Col>
             </Row>
         </Content>

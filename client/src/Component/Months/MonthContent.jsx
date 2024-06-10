@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Layout, Card, Pagination, Empty, Spin, Row, Col, Button, Modal, Form, Input, InputNumber } from "antd";
+import { Layout, Card, Pagination, Empty, Spin, Row, Col, Button, Modal, Form, InputNumber } from "antd";
 
 const { Content } = Layout;
 const { Item } = Form;
@@ -23,14 +23,20 @@ const MonthContent = () => {
     const [associationId, setAssociationId] = useState(null);
     const [forceUpdate, setForceUpdate] = useState(false);
 
+
     useEffect(() => {
         const fetchTemperatureRecords = async () => {
             setLoading(true);
             try {
-                // Fetch association info
-                const associationIdResponse = await axios.get(`http://localhost:8080/api/association/info/${1}`);
-                const associationId = associationIdResponse.data.id;
+                // Retrieve userId from localStorage
+                const userId = localStorage.getItem('token');
+                if (!userId) {
+                    throw new Error('User ID not found in localStorage');
+                }
 
+                // Fetch association ID using userId
+                const associationId = await fetchAssociationId(userId);
+                console.log("assspo",associationId)
                 // Fetch temperature records by association ID
                 const response = await axios.get(`http://localhost:8080/api/temperature-records/by-association/${associationId}`);
                 const recordsByMonth = {};
@@ -58,18 +64,37 @@ const MonthContent = () => {
         fetchTemperatureRecords();
     }, []);
 
+    const fetchAssociationId = async (userId) => {
+        const token = localStorage.getItem('token'); // Use the correct token name
+        if (token) {
+            try {
+                const decodedToken = JSON.parse(atob(token.split('.')[1]));
+                console.log("asdds",decodedToken)// Decode the JWT token
+                const userId = decodedToken.userId;
+                const response = await axios.get(`http://localhost:8080/api/association/getAssociationId/${userId}`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                const associationId = response.data; // Extract association ID from the response
+                setAssociationId(associationId); // Save association ID to state
+                return associationId;
+            } catch (error) {
+                console.error('Error fetching association ID', error);
+                throw error;
+            }
+        }
+    };
+
+
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
 
     const handleEdit = async (month) => {
-        // Implement edit modal here
         setCurrentMonth(month);
         setModalVisible(true);
     };
 
     const handleCreate = async (month) => {
-        // Implement create modal here
         setCurrentMonth(month);
         setModalVisible(true);
     };
@@ -77,6 +102,7 @@ const MonthContent = () => {
     const handleUpdate = async () => {
         try {
             const id = temperatureRecords[currentMonth][0].id;
+            console.log("deneme",temperatureRecords)
             const requestBody = {
                 temperatures: [{
                     temperature: temperature,
@@ -88,60 +114,48 @@ const MonthContent = () => {
             const response = await axios.put(`http://localhost:8080/api/temperature-records/update/${id}`, requestBody);
             console.log(`Updating data for ${currentMonth}:`, response.data);
 
-            // Update the existing record in the state
             const updatedRecord = response.data;
             setTemperatureRecords(prevRecords => ({
                 ...prevRecords,
                 [currentMonth]: [updatedRecord]
             }));
 
-            // Toggle the forceUpdate state to trigger re-render
             setForceUpdate(prev => !prev);
             setModalVisible(false);
         } catch (error) {
             console.error(`Error updating data for ${currentMonth}:`, error);
-            // Handle error
         }
     };
-
-
 
     const handleCreateRecord = async () => {
         try {
-            // Check if a record already exists for the current month
-            if (temperatureRecords[currentMonth]) {
-                // If a record already exists, update it instead of creating a new one
-                handleUpdate();
-            } else {
-                const requestBody = {
-                    temperatures: [{
+            const requestBody = {
+                temperatures: [
+                    {
                         temperature: temperature,
                         averageWet: averageWet,
                         month: currentMonth
-                    }],
-                    associationId: associationId
-                };
+                    }
+                ],
+                associationId: associationId,
+            };
 
-                const response = await axios.post(`http://localhost:8080/api/temperature-records/create`, requestBody);
-                console.log(`Creating data for ${currentMonth}:`, response.data);
+            console.log(requestBody)
 
-                // Add the newly created record to the state
-                const createdRecord = response.data;
-                setTemperatureRecords(prevRecords => ({
-                    ...prevRecords,
-                    [currentMonth]: [createdRecord]
-                }));
+            const response = await axios.post(`http://localhost:8080/api/temperature-records/create`, requestBody);
+            console.log(`Creating data for ${currentMonth}:`, response.data);
 
-                setModalVisible(false);
-            }
+            const createdRecord = response.data;
+            setTemperatureRecords(prevRecords => ({
+                ...prevRecords,
+                [currentMonth]: [createdRecord]
+            }));
+
+            setModalVisible(false);
         } catch (error) {
             console.error(`Error creating data for ${currentMonth}:`, error);
-            // Handle error
         }
     };
-
-
-
 
     const handleModalOk = async () => {
         if (temperatureRecords[currentMonth] && temperatureRecords[currentMonth].length > 0) {
@@ -150,11 +164,9 @@ const MonthContent = () => {
             handleCreateRecord();
         }
 
-        // Reset input values after modal is closed
         setTemperature(null);
         setAverageWet(null);
     };
-
 
     const handleTemperatureChange = (value) => {
         setTemperature(value);
@@ -164,10 +176,7 @@ const MonthContent = () => {
         setAverageWet(value);
     };
 
-
-
     const handleModalCancel = () => {
-        // Handle modal cancel
         setModalVisible(false);
     };
 
@@ -196,7 +205,10 @@ const MonthContent = () => {
                             <Row gutter={[16, 16]}>
                                 {paginatedMonths.map((month, index) => (
                                     <Col span={8} key={index}>
-                                        <Card title={month}>
+                                        <Card
+                                            title={month}
+                                            style={{ height: '100%' }} // Set a fixed height for all cards
+                                        >
                                             {temperatureRecords[month] && temperatureRecords[month].length > 0 ? (
                                                 temperatureRecords[month].map((record, idx) => (
                                                     <p key={idx}>
@@ -207,7 +219,7 @@ const MonthContent = () => {
                                                 <Empty description="No Data" />
                                             )}
                                             {temperatureRecords[month] && temperatureRecords[month].length > 0 ? (
-                                                <Button onClick={() => handleEdit(month)}>Edit</Button>
+                                                null
                                             ) : (
                                                 <Button onClick={() => handleCreate(month)}>Create</Button>
                                             )}
@@ -245,6 +257,7 @@ const MonthContent = () => {
             </Modal>
         </Content>
     );
+
 };
 
 export default MonthContent;
